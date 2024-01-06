@@ -13,21 +13,23 @@ const initialInputs = {
 };
 
 export default function ReportScreen() {
-  const [inputs, setInputs] = useState(initialInputs);
+	const [inputs, setInputs] = useState(initialInputs);
 
-  const handleInputChange = (inputName, value) => {
-    setInputs((prevInputs) => ({ ...prevInputs, [inputName]: value }));
-  };
+	const handleInputChange = (inputName, value) => {
+		setInputs((prevInputs) => ({ ...prevInputs, [inputName]: value }));
+		console.log(value)
+		console.log(inputs.input1.length)
+	};
 
-  const handleSubmit = () => {
-    console.log('Input values:', inputs);
-    console.log('Selected Image:', selectedImage);
-  };
+	const handleSubmit = () => {
+		console.log('Input values:', inputs);
+		console.log('Selected Image:', selectedImage);
+	};
 
   return (
     <SafeAreaView style={styles.container}>
 		<ScrollView>
-			<TextInputComponent label='Informe Técnico de' onInputChange={handleInputChange} />
+			<TextInputComponent inputName='input1' label='Informe Técnico de' onInputChange={handleInputChange} />
 			<TextInputComponent label='Cliente' onInputChange={handleInputChange} />
 			<TextInputComponent label='Elaborado por' onInputChange={handleInputChange} />
 			<TextInputComponent label='Dispositivo a inspeccionar' onInputChange={handleInputChange} />
@@ -42,103 +44,14 @@ export default function ReportScreen() {
 
 			<Text style={styles.label}>Mediciones de Ultasonido</Text>
 			<Text style={styles.label}>Aca van los equemas</Text>
-			<ScrollView horizontal>
-				<GridInput numRows={5} numCols={6}/>
-			</ScrollView>
-			
+			{inputs.input1 && (
+				<ScrollView horizontal>
+					<GridInput numRows={5} numCols={6} />
+				</ScrollView>
+			)}
+
 			<Text>Equipamiento utilizado</Text>
-
-			{/* <View style={styles.container}>
-				<Text style={styles.label}>Resolucion:</Text>
-				<TextInput
-					style={styles.numberInput}
-					placeholder="Ingrese un número"
-					keyboardType="numeric"
-					value={inputs.input5}
-					onChangeText={(text) => handleInputChange('input5', text)}
-				/>
-			</View>
-
-			<View style={styles.container}>
-				<Text style={styles.label}>Rango de medidas:</Text>
-				<TextInput
-					style={styles.numberInput}
-					placeholder="Ingrese un número"
-					keyboardType="numeric"
-					value={inputs.input5}
-					onChangeText={(text) => handleInputChange('input5', text)}
-				/>
-				<TextInput
-				style={styles.numberInput}
-				placeholder="Ingrese un número"
-				keyboardType="numeric"
-				value={inputs.input5}
-				onChangeText={(text) => handleInputChange('input5', text)}
-			/>
-			</View>
-
-			<View style={styles.container}>
-				<Text style={styles.label}>Resolucion:</Text>
-				<TextInput
-					style={styles.numberInput}
-					placeholder="Ingrese un número"
-					keyboardType="numeric"
-					value={inputs.input5}
-					onChangeText={(text) => handleInputChange('input5', text)}
-				/>
-			</View>
-
-			<View>
-				<Text style={styles.label}>Label for Input 5</Text>
-				<TextInput
-				style={styles.input}
-				placeholder="Input 5"
-				value={inputs.input5}
-				onChangeText={(text) => handleInputChange('input5', text)}
-				/>
-			</View>
-
-			<View>
-				<Text style={styles.label}>Label for Input 5</Text>
-				<TextInput
-				style={styles.input}
-				placeholder="Input 5"
-				value={inputs.input5}
-				onChangeText={(text) => handleInputChange('input5', text)}
-				/>
-			</View>
-
-			<View>
-				<Text style={styles.label}>Label for Input 5</Text>
-				<TextInput
-				style={styles.input}
-				placeholder="Input 5"
-				value={inputs.input5}
-				onChangeText={(text) => handleInputChange('input5', text)}
-				/>
-			</View>
-
-			<View>
-				<Text style={styles.label}>Label for Input 5</Text>
-				<TextInput
-				style={styles.input}
-				placeholder="Input 5"
-				value={inputs.input5}
-				onChangeText={(text) => handleInputChange('input5', text)}
-				/>
-			</View>
-
-			<View>
-				<Text style={styles.label}>Label for Input 5</Text>
-				<TextInput
-				style={styles.input}
-				placeholder="Input 5"
-				value={inputs.input5}
-				onChangeText={(text) => handleInputChange('input5', text)}
-				/>
-			</View> */}
-
-			
+			<PhotoInputComponent/>
 
 			<Button title="Submit" onPress={handleSubmit} />
 		</ScrollView>

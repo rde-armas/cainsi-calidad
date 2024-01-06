@@ -1,14 +1,12 @@
 import { View, Text, StyleSheet, TextInput} from 'react-native';
 import React, { useState } from 'react';
 
-const TextInputComponent = ({label, onInputChange}) => {
-    const [inputValue, setInputValue] = useState({
-        input: '',
-    });
+const TextInputComponent = ({label, imputName, onInputChange}) => {
+    const [inputValue, setInputValue] = useState('');
 
     const handleInputChange = (text) => {
         setInputValue(text);
-        onInputChange(label, text);
+        onInputChange(imputName, text);
     }
 
     return (
@@ -18,21 +16,21 @@ const TextInputComponent = ({label, onInputChange}) => {
                 style={styles.input}
                 placeholder="Escribe aqui .."
                 autoCorrect={true}
-                value={inputValue.input}
+                value={inputValue}
                 onChangeText={handleInputChange}
             />
         </View>
     );
 };
 
-const TextMultiLineInputComponent = ({label, onInputChange}) => {
+const TextMultiLineInputComponent = ({label, imputName, onInputChange}) => {
     const [inputValue, setInputValue] = useState({
         input: '',
     });
 
     const handleInputChange = (text) => {
         setInputValue(text);
-        onInputChange(label, text);
+        onInputChange(imputName, text);
     }
 
     return (
@@ -50,14 +48,14 @@ const TextMultiLineInputComponent = ({label, onInputChange}) => {
     );
 };
 
-const NumberInputComponent = ({label, onInputChange}) => {
+const NumberInputComponent = ({label, imputName, onInputChange}) => {
     const [inputValue, setInputValue] = useState({
         input: '',
     });
 
     const handleInputChange = (text) => {
         setInputValue(text);
-        onInputChange(label, text);
+        onInputChange(imputName, text);
     }
 
     return (
@@ -108,6 +106,5 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
     },
 });
-  
-  
+
 export { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent };

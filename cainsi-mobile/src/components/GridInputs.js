@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 0,
   },
   cell: {
     borderWidth: 1,
     borderColor: 'gray',
     padding: 8,
-    marginRight: 5,
+    marginRight: 0,
   },
 });
 

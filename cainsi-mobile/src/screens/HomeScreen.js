@@ -1,4 +1,4 @@
-import { SafeAreaView, Image, TouchableHighlightBase, StyleSheet } from 'react-native';
+import { SafeAreaView, Image, StyleSheet } from 'react-native';
 import React from 'react';
 
 export default function HomeScreen() {
@@ -23,4 +23,4 @@ const style = StyleSheet.create({
 	  borderWidth: 1, // Grosor del borde
 	  color: 'black', // Texto negro
 	},
-  });
+});
