@@ -1,26 +1,55 @@
-import { SafeAreaView, Image, StyleSheet } from 'react-native';
+import { SafeAreaView, Image, StyleSheet, TouchableOpacity, View, Dimensions, Text } from 'react-native';
 import React from 'react';
 
-export default function HomeScreen() {
-  return (
-    <SafeAreaView style={style.container}>
-      	<Image source={require('../assets/cainsi_logo.png')}/>
+export default function HomeScreen(props) {
+  	const { navigation } = props;
 
+	const goToReport = () => {
+		navigation.navigate("Report");
+	}
+
+  return (
+    <SafeAreaView style={styles.container}>
+		<Image source={require('../assets/cainsi_logo.png')} style={styles.logo} />
+		<View style={styles.centeredContainer}>
+			<TouchableOpacity
+				style={styles.touchableOpacity}
+				onPress={goToReport}
+			>
+				<Text style={styles.buttonText}>Medición de Espesores en Recipientes de Presión</Text>
+			</TouchableOpacity>
+		</View>
     </SafeAreaView>
-  )
+  );
 }
 
-const style = StyleSheet.create({
+const windowWidth = Dimensions.get('window').width;
+
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		justifyContent: 'center',
 		alignItems: 'center',
-		alignContent: 'center'
+		backgroundColor: '#fff',
 	},
-	button: {
-	  width: '100', // Ajusta el ancho del botón al 70%
-	  backgroundColor: 'white', // Fondo blanco
-	  borderColor: 'black', // Borde negro
-	  borderWidth: 1, // Grosor del borde
-	  color: 'black', // Texto negro
+	centeredContainer: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	logo: {
+		width: windowWidth, // Ajusta el ancho de la imagen según tus necesidades
+		marginBottom: 20, // Espacio entre la imagen y el botón
+	},
+	touchableOpacity: {
+		width: windowWidth * 0.8,
+		borderWidth: 1,
+		borderColor: 'black',
+		borderRadius: 10,
+		padding: 10,
+		alignItems: 'center', // Alinea el contenido al centro horizontalmente
+	},
+	buttonText: {
+		textAlign: 'center', // Alinea el texto al centro
 	},
 });

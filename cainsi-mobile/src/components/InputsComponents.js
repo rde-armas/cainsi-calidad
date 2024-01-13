@@ -59,7 +59,7 @@ const NumberInputComponent = ({label, imputName, onInputChange}) => {
     }
 
     return (
-        <View>
+        <View style={styles.numberView}>
             <Text style={styles.label}>{label}:</Text>
             <TextInput
                 style={styles.numberInput}
@@ -91,12 +91,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 4,
     },
+    numberView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        margin:5,
+    },
     numberInput: {
         height: 40,
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius:5,
         paddingHorizontal: 8,
+        marginLeft:8,
     },
     multilineText: {
         borderWidth: 1,
