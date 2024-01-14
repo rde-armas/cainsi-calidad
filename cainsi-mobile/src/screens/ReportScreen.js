@@ -82,7 +82,7 @@ export default function ReportScreen() {
 						transparent={true}
 						visible={modalVisible}
 						onRequestClose={() => {
-							Alert.alert('Modal has been closed.');
+							Alert.alert('No seleccioné ningún esquema.');
 							setModalVisible(!modalVisible);
 						}}>
 						<View style={styles.centeredView}>
