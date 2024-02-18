@@ -10,29 +10,29 @@ import ReportsQueueNavigation from './ReportQueueNavigation';
 const Tab = createBottomTabNavigator();
 
 export default function Navigation() {
-  return (
-    <Tab.Navigator>
-        <Tab.Screen name='Home' component={HomeScreen} options={{
-            tabBarLabel: "Home",
-            tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size} />,
-        }} />
+    return (
+        <Tab.Navigator>
+            <Tab.Screen name='Home' component={HomeScreen} options={{
+                tabBarLabel: "Home",
+                tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size} />,
+            }} />
 
-        <Tab.Screen name='Report' component={ReportScreen} options={{
-            tabBarLabel: "Reporte",
-            tabBarIcon: ({ color, size }) => <Icon name="document" color={color} size={size} />,
+            <Tab.Screen name='Report' component={ReportScreen} options={{
+                tabBarLabel: "Reporte",
+                tabBarIcon: ({ color, size }) => <Icon name="document" color={color} size={size} />,
+                
+            }}/>
+
+            <Tab.Screen name='ReportsQueue' component={ReportsQueueNavigation} options={{
+                tabBarLabel: "Cola de Reportes",
+                tabBarIcon: ({ color, size }) => <Icon name="albums" color={color} size={size} />,
+            }} />
+
+            <Tab.Screen name='Settings' component={SettingsScreen} options={{
+                tabBarLabel: "Settings",
+                tabBarIcon: ({ color, size }) => <Icon name="settings" color={color} size={size} />,
             
-        }}/>
-
-        <Tab.Screen name='ReportsQueue' component={ReportsQueueNavigation} options={{
-            tabBarLabel: "Cola de Reportes",
-            tabBarIcon: ({ color, size }) => <Icon name="albums" color={color} size={size} />,
-        }} />
-
-        <Tab.Screen name='Settings' component={SettingsScreen} options={{
-            tabBarLabel: "Settings",
-            tabBarIcon: ({ color, size }) => <Icon name="settings" color={color} size={size} />,
-        
-        }}/>
-    </Tab.Navigator>
-  )
+            }}/>
+        </Tab.Navigator>
+    )
 }

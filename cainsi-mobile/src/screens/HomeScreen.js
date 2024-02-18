@@ -1,11 +1,29 @@
-import { SafeAreaView, Image, StyleSheet, TouchableOpacity, View, Dimensions, Text } from 'react-native';
+import { SafeAreaView, Image, StyleSheet, TouchableOpacity, View, Dimensions, Text, Alert } from 'react-native';
 import React from 'react';
+import { ReportContext } from '../components/context/AppContext';
 
 export default function HomeScreen(props) {
   	const { navigation } = props;
 
-	const goToReport = () => {
-		navigation.navigate("Report");
+	const { setReportUse, report } = React.useContext(ReportContext);
+
+	const goToReport = (reportName) => {
+		if (report) {
+			Alert.alert(
+				"Advertencia",
+				"Perderás el trabajo del reporte en el que ya estabas trabajando. ¿Deseas continuar?",
+				[
+					{ text: "Cancelar", style: "cancel" },
+					{ text: "Continuar", onPress: () => {
+						setReportUse(reportName);
+						navigation.navigate("Report");
+					}}
+				]
+			);
+		} else {
+			setReportUse(reportName);
+			navigation.navigate("Report");
+		}
 	}
 
   return (
@@ -14,9 +32,15 @@ export default function HomeScreen(props) {
 		<View style={styles.centeredContainer}>
 			<TouchableOpacity
 				style={styles.touchableOpacity}
-				onPress={goToReport}
+				onPress={()=> goToReport("medicionEspesores")}
 			>
 				<Text style={styles.buttonText}>Medición de Espesores en Recipientes de Presión</Text>
+			</TouchableOpacity>
+			<TouchableOpacity
+				style={styles.touchableOpacity}
+				onPress={()=> goToReport("empty")}
+			>
+				<Text style={styles.buttonText}>....</Text>
 			</TouchableOpacity>
 		</View>
     </SafeAreaView>

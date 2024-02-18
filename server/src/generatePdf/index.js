@@ -98,7 +98,7 @@ function createCover(pdf, deviceName, client, madeBy ) {
     pdf.text(madeByText, pageWidth / 2, pageHeight - 50, { align: 'center' });
 
     // Dibujar la línea horizontal
-    pdf.setLineWidth(0.5); 
+    pdf.setLineWidth(0.2); 
     pdf.line(lineX1, lineY, lineX2, lineY);
 
 }
