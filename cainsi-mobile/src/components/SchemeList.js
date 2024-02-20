@@ -3,9 +3,12 @@ import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity } from 'react
 
 export default function SchemeList({ onSelectImage }) {
     const images = [
-        { id: '1', source: require('../assets/scheme/1.png') },
+        { id: '1', grid:[[]],source: require('../assets/scheme/1.png') },
         { id: '2', source: require('../assets/scheme/2.png') },
-        { id: '3', source: require('../assets/scheme/3.png') },
+        { id: '3', grid:[
+            ['Envolvente', ['A', 'B', 'C', 'D'], [1, 2, 3, 4, 5, 6]], 
+            ['Casquete', ['Inferior','Superior'], [1, 2, 3, 4, 5, 6, 7, 8, 9]]
+            ], source: require('../assets/scheme/3.png') },
         { id: '4', source: require('../assets/scheme/4.png') },
         { id: '5', source: require('../assets/scheme/5.png') },
         { id: '6', source: require('../assets/scheme/6.png') },
@@ -13,8 +16,8 @@ export default function SchemeList({ onSelectImage }) {
         { id: '8', source: require('../assets/scheme/8.png') },
     ];
 
-    const handleImagePress = (id, image) => {
-        onSelectImage(id, image);
+    const handleImagePress = (id, grid, image) => {
+        onSelectImage(id, grid, image);
     };
 
     return (
@@ -24,7 +27,7 @@ export default function SchemeList({ onSelectImage }) {
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
                 <TouchableOpacity 
-                    onPress={() => handleImagePress(item.id)}
+                    onPress={() => handleImagePress(item.id, item.grid, item.source)}
                     style={style.touchable}    
                 >
                 <Image

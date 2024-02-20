@@ -23,9 +23,9 @@ const TextInputComponent = ({label, imputName, onInputChange}) => {
     );
 };
 
-const TextMultiLineInputComponent = ({label, imputName, onInputChange}) => {
+const TextMultiLineInputComponent = ({label, imputName, defaultInput, onInputChange}) => {
     const [inputValue, setInputValue] = useState({
-        input: '',
+        input: defaultInput !== '' ? defaultInput : '',
     });
 
     const handleInputChange = (text) => {

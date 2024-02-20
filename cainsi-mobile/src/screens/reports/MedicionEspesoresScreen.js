@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { Alert, SafeAreaView, Modal, Button, View, StyleSheet, Text, ScrollView, Pressable} from 'react-native';
-import { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent } from '../../components/InputsComponents';
-import PhotoInputComponent from '../../components/PhotoInputComponent';
+import { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent } from '../../components/inputs/InputsComponents';
+import PhotoInputComponent from '../../components/inputs/PhotoInputComponent';
 import SchemeList from '../../components/SchemeList';
-import GridInput from '../../components/GridInputs';
+import GridInput from '../../components/inputs/GridInputs';
 
 const initialInputs = {
-  input1: '',
-  input2: '',
-  input3: '',
-  input4: '',
-  input5: '',
+	dispositivo: '',
+	cliente: '',
+	elaborado: '',
+	sitioInspeccion: 'Superficies accesibles del cuerpo del depósito. Dispositivo térmicamente aislado y en servicio. Se ensayaron zonas descubiertas en la aislación térmica.',
+	resolucion: '',
+	minRange: '',
+	maxRange: '',
+	objeto: 'Todas las superficies accesibles y uniones soldadas del tanque.',
+	propositoAlcance: 'Inspección de las superficies accesibles con la finalidad de descartar la existencia de deformaciones y severa corrosión localizada.',
+	preparacion: 'Limpieza. Iluminación apropiada.',
+	conclusion: '',
 };
 
 const schemeImage = {
@@ -23,29 +29,26 @@ const MedicionEspesoresScreen = () => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [schemeImg, setScheme] =  useState(schemeImage)
 
-	const handleSchemeSet = (id, imageUri) => {
-		setScheme((scheme) => ({ ...scheme, id, imageUri }));
+	const handleSchemeSet = (id, grid, imageUri) => {
+		setScheme((scheme) => ({ ...scheme, id, grid, imageUri }));
 	};
 
 	const handleInputChange = (inputName, value) => {
 		setInputs((prevInputs) => ({ ...prevInputs, [inputName]: value }));
 		console.log(value)
-		console.log(inputs.input1.length)
 	};
 
 	const handleSubmit = () => {
 		console.log('Input values:', inputs);
-		console.log('Selected Image:', selectedImage);
 	};
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView>
-				<TextInputComponent inputName='input1' label='Dipositivo' onInputChange={handleInputChange} />
-				<TextInputComponent label='Cliente' onInputChange={handleInputChange} />
-				<TextInputComponent label='Elaborado por' onInputChange={handleInputChange} />
-				<TextInputComponent label='Dispositivo a inspeccionar' onInputChange={handleInputChange} />
-				<TextMultiLineInputComponent label='Sitio bajo inspección' onInputChange={handleInputChange} />
+				<TextInputComponent inputName='dispositivo' label='Dipositivo' onInputChange={handleInputChange} />
+				<TextInputComponent inputName='cliente' label='Cliente' onInputChange={handleInputChange} />
+				<TextInputComponent inputName='elaborado' label='Elaborado por' onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='sitioInspeccion' label='Sitio bajo inspección' defaultInput={initialInputs.sitioInspeccion} onInputChange={handleInputChange} />
 				<View>
 					<Text>Equipamiento utilizado</Text>
 					<NumberInputComponent inputName='resolucion' label='Resolución en mm'/>
@@ -62,14 +65,13 @@ const MedicionEspesoresScreen = () => {
 						<NumberInputComponent inputName='maxRange' label='Max'/>
 					</View>
 				</View>
-				<Text>LA NORMATIVA ES SIEMPRE LAMISMA ??????????????</Text>
 
 				<Text style={styles.label}>Ensayo visual</Text>
 				
-				<TextMultiLineInputComponent label='Objeto' onInputChange={handleInputChange} />
-				<TextMultiLineInputComponent label='Propósito y alcance' onInputChange={handleInputChange} />
-				<TextMultiLineInputComponent label='Preparación' onInputChange={handleInputChange} />
-				<TextMultiLineInputComponent label='Resultado' onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='objeto' label='Objeto' onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='propositoAlcance' label='Propósito y alcance' onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='preparacion' label='Preparación' onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='resultado' label='Resultado' onInputChange={handleInputChange} />
 
 				<Text style={styles.label}>Mediciones de Ultasonido</Text>
 				<Text style={styles.label}>Aca van los equemas</Text>
@@ -87,11 +89,11 @@ const MedicionEspesoresScreen = () => {
 						}}>
 						<View style={styles.centeredView}>
 							<View style={styles.modalView}>
-								<SchemeList onSelectImage={(id, image) => {
+								<SchemeList onSelectImage={(id, grid, image) => {
 									// Manejar el id de la imagen seleccionada aquí
 									// setear el id de la imagen en la lista de inputs
-										handleSchemeSet(id, image)
-										console.log(`Imagen seleccionada con id: ${id}`);
+										handleSchemeSet(id, grid, image)
+										console.log(`Imagen seleccionada con id: ${schemeImg}`);
 										setModalVisible(!modalVisible)
 									}}/>
 							</View>
@@ -111,14 +113,15 @@ const MedicionEspesoresScreen = () => {
 				{
 					schemeImg.id && (
 					<ScrollView horizontal>
-						<GridInput numRows={5} numCols={6} />
+						<GridInput gridData= {schemeImg.grid} />
 					</ScrollView>)
 				}
 
 				<Text>Equipamiento utilizado</Text>
 				<PhotoInputComponent/>
 
-				<Button title="Submit" onPress={handleSubmit} />
+				<TextMultiLineInputComponent inputName='conclusion' label='conclusion' onInputChange={handleInputChange} />
+				<Button title="Crear PDF" onPress={handleSubmit} />
 			</ScrollView>
 		</SafeAreaView>
 	);
