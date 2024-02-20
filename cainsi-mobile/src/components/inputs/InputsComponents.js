@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, TextInput} from 'react-native';
 import React, { useState } from 'react';
 
-const TextInputComponent = ({label, imputName, onInputChange}) => {
+const TextInputComponent = ({label, inputName, onInputChange}) => {
     const [inputValue, setInputValue] = useState('');
 
     const handleInputChange = (text) => {
         setInputValue(text);
-        onInputChange(imputName, text);
+        onInputChange(inputName, text);
     }
 
     return (
@@ -23,14 +23,14 @@ const TextInputComponent = ({label, imputName, onInputChange}) => {
     );
 };
 
-const TextMultiLineInputComponent = ({label, imputName, defaultInput, onInputChange}) => {
+const TextMultiLineInputComponent = ({label, inputName, defaultInput, onInputChange}) => {
     const [inputValue, setInputValue] = useState({
         input: defaultInput !== '' ? defaultInput : '',
     });
 
     const handleInputChange = (text) => {
         setInputValue(text);
-        onInputChange(imputName, text);
+        onInputChange(inputName, text);
     }
 
     return (
@@ -48,14 +48,14 @@ const TextMultiLineInputComponent = ({label, imputName, defaultInput, onInputCha
     );
 };
 
-const NumberInputComponent = ({label, imputName, onInputChange}) => {
+const NumberInputComponent = ({label, inputName, onInputChange}) => {
     const [inputValue, setInputValue] = useState({
         input: '',
     });
 
     const handleInputChange = (text) => {
         setInputValue(text);
-        onInputChange(imputName, text);
+        onInputChange(inputName, text);
     }
 
     return (

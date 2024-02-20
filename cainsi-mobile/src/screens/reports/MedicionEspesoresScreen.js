@@ -4,6 +4,7 @@ import { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent }
 import PhotoInputComponent from '../../components/inputs/PhotoInputComponent';
 import SchemeList from '../../components/SchemeList';
 import GridInput from '../../components/inputs/GridInputs';
+import { sendJSONToServer } from '../../api/pdf';
 
 const initialInputs = {
 	dispositivo: '',
@@ -35,11 +36,12 @@ const MedicionEspesoresScreen = () => {
 
 	const handleInputChange = (inputName, value) => {
 		setInputs((prevInputs) => ({ ...prevInputs, [inputName]: value }));
-		console.log(value)
 	};
 
 	const handleSubmit = () => {
 		console.log('Input values:', inputs);
+		sendJSONToServer(inputs);
+
 	};
 
 	return (
@@ -51,7 +53,7 @@ const MedicionEspesoresScreen = () => {
 				<TextMultiLineInputComponent inputName='sitioInspeccion' label='Sitio bajo inspección' defaultInput={initialInputs.sitioInspeccion} onInputChange={handleInputChange} />
 				<View>
 					<Text>Equipamiento utilizado</Text>
-					<NumberInputComponent inputName='resolucion' label='Resolución en mm'/>
+					<NumberInputComponent inputName='resolucion' label='Resolución en mm' onInputChange={handleInputChange}/>
 					<Text>Rango de medida</Text>
 					<View style={
 						{
@@ -61,8 +63,8 @@ const MedicionEspesoresScreen = () => {
 							margin:8,
 						}
 					}>
-						<NumberInputComponent inputName='minRange' label='Min'/>
-						<NumberInputComponent inputName='maxRange' label='Max'/>
+						<NumberInputComponent inputName='minRange' label='Min' onInputChange={handleInputChange}/>
+						<NumberInputComponent inputName='maxRange' label='Max' onInputChange={handleInputChange}/>
 					</View>
 				</View>
 
