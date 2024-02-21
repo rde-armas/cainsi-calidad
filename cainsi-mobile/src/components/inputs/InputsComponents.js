@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, TextInput} from 'react-native';
 import React, { useState } from 'react';
 
-const TextInputComponent = ({label, inputName, onInputChange}) => {
-    const [inputValue, setInputValue] = useState('');
+const TextInputComponent = ({label, inputName, defaultInput, onInputChange}) => {
+    const [inputValue, setInputValue] = useState(defaultInput);
 
     const handleInputChange = (text) => {
         setInputValue(text);
@@ -24,9 +24,7 @@ const TextInputComponent = ({label, inputName, onInputChange}) => {
 };
 
 const TextMultiLineInputComponent = ({label, inputName, defaultInput, onInputChange}) => {
-    const [inputValue, setInputValue] = useState({
-        input: defaultInput !== '' ? defaultInput : '',
-    });
+    const [inputValue, setInputValue] = useState(defaultInput);
 
     const handleInputChange = (text) => {
         setInputValue(text);
@@ -40,7 +38,7 @@ const TextMultiLineInputComponent = ({label, inputName, defaultInput, onInputCha
                 multiline
                 numberOfLines={4} 
                 placeholder="Escribe aquí..."
-                value={inputValue.input}
+                value={inputValue}
                 onChangeText={handleInputChange}
                 style={styles.multilineText}
             />
@@ -48,10 +46,8 @@ const TextMultiLineInputComponent = ({label, inputName, defaultInput, onInputCha
     );
 };
 
-const NumberInputComponent = ({label, inputName, onInputChange}) => {
-    const [inputValue, setInputValue] = useState({
-        input: '',
-    });
+const NumberInputComponent = ({label, defaultInput, inputName, onInputChange}) => {
+    const [inputValue, setInputValue] = useState(defaultInput);
 
     const handleInputChange = (text) => {
         setInputValue(text);
@@ -65,7 +61,7 @@ const NumberInputComponent = ({label, inputName, onInputChange}) => {
                 style={styles.numberInput}
                 placeholder="Ingrese un número"
                 keyboardType="numeric"
-                value={inputValue.input}
+                value={inputValue}
                 onChangeText={handleInputChange}
             />
         </View>

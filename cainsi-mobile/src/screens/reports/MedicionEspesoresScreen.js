@@ -11,14 +11,17 @@ const initialInputs = {
 	cliente: '',
 	elaborado: '',
 	sitioInspeccion: 'Superficies accesibles del cuerpo del depósito. Dispositivo térmicamente aislado y en servicio. Se ensayaron zonas descubiertas en la aislación térmica.',
-	resolucion: '',
-	minRange: '',
-	maxRange: '',
+	resolucion: '0.01',
+	minRange: '0.5',
+	maxRange: '508',
+	palpador:'5MHz',
+	diametro: '6',
 	norma: 'Norma: ASTM E-797\nMétodo: Medición de espesores por ultrasonido\nTécnica: Pulso - Eco',
 	objeto: 'Todas las superficies accesibles y uniones soldadas del tanque.',
 	propositoAlcance: 'Inspección de las superficies accesibles con la finalidad de descartar la existencia de deformaciones y severa corrosión localizada.',
 	preparacion: 'Limpieza. Iluminación apropiada.',
 	resultado:'',
+	scheme: '',
 	conclusion: '',
 };
 
@@ -34,6 +37,7 @@ const MedicionEspesoresScreen = () => {
 
 	const handleSchemeSet = (id, grid, imageUri) => {
 		setScheme((scheme) => ({ ...scheme, id, grid, imageUri }));
+		initialInputs.scheme = id;
 	};
 
 	const handleInputChange = (inputName, value) => {
@@ -120,7 +124,6 @@ const MedicionEspesoresScreen = () => {
 					</ScrollView>)
 				}
 
-				<Text>Equipamiento utilizado</Text>
 				<PhotoInputComponent/>
 
 				<TextMultiLineInputComponent inputName='conclusion' label='conclusion' onInputChange={handleInputChange} />
