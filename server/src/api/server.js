@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { generatePDF } from '../generatePdf/index.js';
 
 const app = express();
 const PORT = 3000;
@@ -8,9 +9,8 @@ app.use(bodyParser.json());
 
 app.post('/receive-json', (req, res) => {
     const jsonData = req.body;
-    console.log(jsonData);
-    // Aquí puedes llamar a la función para generar el PDF
-  // generatePDF(jsonData);
+    
+    generatePDF(jsonData);
     res.send('JSON recibido correctamente');
 });
 

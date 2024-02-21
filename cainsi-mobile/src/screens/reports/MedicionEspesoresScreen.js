@@ -14,9 +14,11 @@ const initialInputs = {
 	resolucion: '',
 	minRange: '',
 	maxRange: '',
+	norma: 'Norma: ASTM E-797\nMétodo: Medición de espesores por ultrasonido\nTécnica: Pulso - Eco',
 	objeto: 'Todas las superficies accesibles y uniones soldadas del tanque.',
 	propositoAlcance: 'Inspección de las superficies accesibles con la finalidad de descartar la existencia de deformaciones y severa corrosión localizada.',
 	preparacion: 'Limpieza. Iluminación apropiada.',
+	resultado:'',
 	conclusion: '',
 };
 
@@ -39,9 +41,8 @@ const MedicionEspesoresScreen = () => {
 	};
 
 	const handleSubmit = () => {
-		console.log('Input values:', inputs);
+		//console.log('Input values:', inputs);
 		sendJSONToServer(inputs);
-
 	};
 
 	return (

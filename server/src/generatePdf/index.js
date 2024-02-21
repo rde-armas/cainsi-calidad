@@ -1,111 +1,114 @@
-import { jsPDF } from "jspdf";
-import { addImage, dimensionAspectRatio } from './addImage.js';
+import { jsPDF } from 'jspdf';
+import { addHeader, addFooter, createCover } from './firstPage.js';
 
-const LOGO_PATH = '../assets/cainsi_logo.png'
+const sections = [
+    {
+        title: '1. Sitio de inspección',
+        content: 'sitioInspeccion'
+    },
+    {
+        title: '2. Equipamiento utilizado',
+        content: ''
+    },
+    {
+        title: '-  Resolución:',
+        content: 'resolucion'
+    },
+    {
+        title: '-  Rango de medición',
+        content: 'minRange'
+    },
+    {
+        title: '-  Rango de medición',
+        content: 'maxRange'
+    },
+    {
+        title: '3. Normativa de Referencia',
+        content: 'norma'
+    },
+    {
+        title: '4. Ensayo visual',
+        content: ''
+    },
+    {
+        title: 'a. Objeto',
+        content: 'objeto'
+    },
+    {
+        title: 'b. Propósito y alcance',
+        content: 'propositoAlcance'
+    },
+    {
+        title: 'c. Preparación',
+        content: 'preparacion'
+    },
+    {
+        title: 'd. Resultado',
+        content: 'resultado'
+    },
+    {
+        title: '5. Mediciones de Ultrasonido',
+        content: ''
+    },
+    {
+        title: '6. Conclusión',
+        content: 'conclusion'
+    }
+];
 
-const generatePDF = () => { 
+const generatePDF = (data) => { 
+    const {dispositivo, cliente, elaborado} = data;
     const doc = new jsPDF();
-    addHeader(doc)
-    createCover(doc, "deposito ")
-    addFooter(doc)
-    doc.addPage()
-    addHeader(doc)
+    addHeader(doc);
+    createCover(doc, dispositivo, cliente, elaborado);
+    addFooter(doc);
+    doc.addPage(doc);
+    addHeader(doc);
+    addContent(doc, data);
     doc.save('a4.pdf')
-    console.log("asdf")
-}
-
-function addHeader(pdf, path = LOGO_PATH) {
-    const rectWidth = pdf.internal.pageSize.getWidth() - 70; // Ancho de la página - márgenes
-    const fillColor = "#aca899";
-    pdf.setFillColor(fillColor);
-    pdf.rect(35, 15, rectWidth, 1.2, 'F')
-    addImage(pdf, path, 'PNG', 45, 16, 75, 18);
-}
-
-// Función para agregar pie de página
-function addFooter(pdf) {
-    const lineHeight = 10; // Altura de línea
-    const verticalCenter = pdf.internal.pageSize.height - 30; // Posición vertical en el centro
-    pdf.setFontSize(14);
-    pdf.setFont('Helvetica', 'bold');
-    pdf.text('CAINSI - Servicios Industriales\n\nwww.cainsi.com', pdf.internal.pageSize.width / 2, verticalCenter, { align: 'center' });
-}
-
-function createCover(pdf, deviceName, client, madeBy ) {
-    const pageWidth = pdf.internal.pageSize.width;
-    const pageHeight = pdf.internal.pageSize.height;
-
-    // Obtener la fecha actual en el formato deseado
-    const currentDate = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('es-UY', options);
-
-    // Configurar estilo para fecha
-    pdf.setFontSize(12);
-    pdf.setFont('Helvetica', 'normal');
-
-    // Dibujar la fecha
-    const dateX = pageWidth - pdf.getTextDimensions(`Montevideo, ${formattedDate}`).w - 35
-    pdf.text(`Montevideo, ${formattedDate}`, dateX, 50);
-
-    // Configurar estilo para línea negra
-    pdf.setLineWidth(0.2);
-    pdf.setDrawColor(0, 0, 0);
-
-    // Configurar estilo para título
-    pdf.setFontSize(16);
-    pdf.setFont('Helvetica');
-
-    // Dibujar el título
-    const title = "Informe Técnico de Medición de Espesores en\nRecipientes de Presión";
-    const titleY = 70;
-    pdf.text(title, pageWidth / 2, titleY, { align: 'center' });
-
-    // Dibujar línea encima del título
-    const titleTopLineY = titleY - pdf.getTextDimensions(title).h - 7;
-    pdf.line(35, titleTopLineY, pageWidth - 35, titleTopLineY);
-
-    // Dibujar línea debajo del título
-    const titleBottomLineY = titleY + pdf.getTextDimensions(title).h + 10;
-    pdf.line(35, titleBottomLineY, pageWidth - 35, titleBottomLineY);
-
-    // Name device
-    pdf.text(deviceName, pageWidth / 2, titleBottomLineY + 15, { align: 'center' });
-
-    // Añadir imagen al centro
-    const imagePath = '../assets/Untitled.jpg'; 
-    const { width, height } = dimensionAspectRatio(imagePath, pageWidth - 80, 115);
-    const imageX = (pageWidth - width) / 2;
-    const imageY = ((pageHeight - height) / 2) + 20;
-    addImage(pdf, imagePath, 'JPG', imageX, imageY, pageWidth - 80, 115);
-    pdf.rect(imageX - 3, imageY - 3, width + 6, height + 6);
-
-    pdf.setFontSize(14);
-    const clientText = `Cliente: ${client}`;
-    const madeByText = `Elaborado por: ${madeBy}`;
-
-    // Determinar la longitud del texto más largo
-    const clientTextWidth = pdf.getTextDimensions(clientText).w;
-    const madeByTextWidth = pdf.getTextDimensions(madeByText).w;
-    const longestTextWidth = Math.max(clientTextWidth, madeByTextWidth);
-
-    // Calcular las posiciones y dibujar la línea
-    const lineY = pageHeight - 57;
-    const lineX1 = (pageWidth - longestTextWidth) / 2;
-    const lineX2 = (pageWidth + longestTextWidth) / 2;
-
-    pdf.text(clientText, pageWidth / 2, pageHeight - 60, { align: 'center' });
-    pdf.text(madeByText, pageWidth / 2, pageHeight - 50, { align: 'center' });
-
-    // Dibujar la línea horizontal
-    pdf.setLineWidth(0.2); 
-    pdf.line(lineX1, lineY, lineX2, lineY);
-
+    console.log('asdf')
 }
 
 // Función para agregar contenido
-function addContent(pdf) {
-    pdf.text("Este es el contenido del documento PDF", 20, 40);
-}
+const addContent = (doc, data) => {
+    let yPos = 70; // posición vertical inicial
+    const pageHeight = doc.internal.pageSize.height;
+    const maxWidth = doc.internal.pageSize.width - 40; // ancho máximo del texto
 
-generatePDF()
+    sections.forEach(section => {
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(14);
+        yPos += 5; // espacio antes de cada título
+        const titleLines = doc.splitTextToSize(section.title, maxWidth);
+        yPos = checkPageOverflow(doc, yPos, titleLines.length * 10);
+        doc.text(10, yPos, titleLines);
+        yPos += titleLines.length * 10;
+
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(12);
+        if (section.content !== '') {
+            const contentLines = doc.splitTextToSize(data[section.content], maxWidth);
+            yPos = checkPageOverflow(doc, yPos, contentLines.length * 8);
+            doc.text(10, yPos, contentLines);
+            yPos += contentLines.length * 8;
+        }
+
+        // Check if we need to add a new page
+        if (yPos > pageHeight - 20) {
+            doc.addPage();
+            addHeader(doc);
+            yPos = 50; // Reset yPos for new page
+        }
+    });
+};
+
+const checkPageOverflow = (doc, currentY, addedHeight) => {
+    const pageHeight = doc.internal.pageSize.height;
+    if (currentY + addedHeight > pageHeight - 20) {
+        doc.addPage();
+        addHeader(doc);
+        return 50; // Return yPos for new page
+    }
+    return currentY;
+};
+export { generatePDF }

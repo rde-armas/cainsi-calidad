@@ -18,7 +18,7 @@ function dimensionAspectRatio(path, maxWidth, maxHeight){
         height = maxHeight;
         width = height * aspectRatio;
     }
-    console.log(width)
+    //console.log(width)
     return { width, height };
 }
 
