@@ -3,18 +3,18 @@ import { addImage, dimensionAspectRatio } from './addImage.js';
 const LOGO_PATH = '../assets/cainsi_logo.png'
 
 function addHeader(pdf, path = LOGO_PATH) {
-    const rectWidth = pdf.internal.pageSize.getWidth() - 70; // Ancho de la página - márgenes
+    const rectWidth = pdf.internal.pageSize.getWidth() - 60; // Ancho de la página - márgenes
     const fillColor = "#aca899";
     pdf.setFillColor(fillColor);
-    pdf.rect(35, 15, rectWidth, 1.2, 'F')
-    addImage(pdf, path, 'PNG', 45, 16, 75, 18);
+    pdf.rect(30, 15, rectWidth, 1.2, 'F')
+    addImage(pdf, path, 'PNG', 40, 16, 80, 18);
 }
 
 // Función para agregar pie de página
 function addFooter(pdf) {
     const lineHeight = 10; // Altura de línea
     const verticalCenter = pdf.internal.pageSize.height - 30; // Posición vertical en el centro
-    pdf.setFontSize(11);
+    pdf.setFontSize(10);
     pdf.setFont('Helvetica', 'bold');
     pdf.text('CAINSI - Servicios Industriales\n\nwww.cainsi.com', pdf.internal.pageSize.width / 2, verticalCenter, { align: 'center' });
 }

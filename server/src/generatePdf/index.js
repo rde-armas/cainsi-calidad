@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { addHeader, addFooter, createCover } from './firstPage.js';
+import { addScheme } from './addScheme.js';
 
 const sections = [
     {
@@ -8,19 +9,7 @@ const sections = [
     },
     {
         title: '2. Equipamiento utilizado',
-        content: ''
-    },
-    {
-        title: '-  Resolución:',
-        content: 'resolucion'
-    },
-    {
-        title: '-  Rango de medición',
-        content: 'minRange'
-    },
-    {
-        title: '-  Rango de medición',
-        content: 'maxRange'
+        content: '-'
     },
     {
         title: '3. Normativa de Referencia',
@@ -28,7 +17,7 @@ const sections = [
     },
     {
         title: '4. Ensayo visual',
-        content: ''
+        content: 'ensayo'
     },
     {
         title: 'a. Objeto',
@@ -48,7 +37,7 @@ const sections = [
     },
     {
         title: '5. Mediciones de Ultrasonido',
-        content: ''
+        content: 'scheme'
     },
     {
         title: '6. Conclusión',
@@ -71,32 +60,70 @@ const generatePDF = (data) => {
 
 // Función para agregar contenido
 const addContent = (doc, data) => {
-    let yPos = 70; // posición vertical inicial
+    const { resolucion, minRange, maxRange, palpador, diametro} = data;
+    let yPos = 40; // posición vertical inicial
     const pageHeight = doc.internal.pageSize.height;
-    const maxWidth = doc.internal.pageSize.width - 40; // ancho máximo del texto
+    const maxWidth = doc.internal.pageSize.width - 60; // ancho máximo del texto
 
     sections.forEach(section => {
-        doc.setFont('Helvetica', 'bold');
-        doc.setFontSize(14);
-        yPos += 5; // espacio antes de cada título
-        const titleLines = doc.splitTextToSize(section.title, maxWidth);
-        yPos = checkPageOverflow(doc, yPos, titleLines.length * 10);
-        doc.text(10, yPos, titleLines);
-        yPos += titleLines.length * 10;
+        let titleLines = '';
+        let contentLines = '';
+        let xposTitle = 30;
+        let xposContent = 35;
+        if (section.content == '-' ){
+            //Title
+            titleLines = doc.splitTextToSize(section.title, maxWidth);
+            
+            // content
+            contentLines = doc.splitTextToSize(`- Resolución: ${resolucion} mm\n- Rango de medida: ${minRange} a ${maxRange}mm\n- Scan basado en tiempo A/B y compuerta\n- Palpador: ${palpador}, diámetro ${diametro}mm`, maxWidth);
+            yPos = checkPageOverflow(doc, yPos, contentLines.length * 7 + titleLines.length * 6);
+        } else if (section.content === 'scheme') {
+            const {scheme} = data;
+            //console.log(scheme);
+            yPos = addScheme(doc, yPos, data.scheme);
+        }  else if(section.content === 'ensayo'){
+            titleLines = doc.splitTextToSize(section.title, maxWidth);
+            doc.setFont('Helvetica', 'normal');
+            doc.setFontSize(14);
+            doc.text(xposTitle , yPos, titleLines);
+            yPos += titleLines.length * 6;
+            return;
+        } else if (isNaN(parseInt(section.title[0]))) {
+            //Title
+            titleLines = doc.splitTextToSize(section.title, maxWidth);
+            xposTitle = 40;
 
+            // content
+            contentLines = doc.splitTextToSize(data[section.content], maxWidth, maxWidth);
+            yPos = checkPageOverflow(doc, yPos, (contentLines.length + titleLines.length) * 6);
+            xposContent = 45;
+        } 
+        else if (section.content !== '' ) {
+            //Title
+            titleLines = doc.splitTextToSize(section.title, maxWidth);
+
+            // content
+            contentLines = doc.splitTextToSize(data[section.content], maxWidth, maxWidth);
+            yPos = checkPageOverflow(doc, yPos, contentLines.length * 7 + titleLines.length * 6);
+        } 
+        
+        //title
         doc.setFont('Helvetica', 'normal');
-        doc.setFontSize(12);
-        if (section.content !== '') {
-            const contentLines = doc.splitTextToSize(data[section.content], maxWidth);
-            yPos = checkPageOverflow(doc, yPos, contentLines.length * 8);
-            doc.text(10, yPos, contentLines);
-            yPos += contentLines.length * 8;
-        }
+        doc.setFontSize(14);
+        doc.text(xposTitle , yPos, titleLines);
+        yPos += titleLines.length * 6;
+        
+        //content
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(11);
+        doc.text(xposContent, yPos, contentLines);
+        yPos += contentLines.length * 7;
 
         // Check if we need to add a new page
-        if (yPos > pageHeight - 20) {
+        if (yPos > pageHeight - 30) {
             doc.addPage();
             addHeader(doc);
+            addFooter(doc);
             yPos = 50; // Reset yPos for new page
         }
     });
@@ -104,11 +131,13 @@ const addContent = (doc, data) => {
 
 const checkPageOverflow = (doc, currentY, addedHeight) => {
     const pageHeight = doc.internal.pageSize.height;
-    if (currentY + addedHeight > pageHeight - 20) {
+    if (currentY + addedHeight > pageHeight - 30) {
         doc.addPage();
         addHeader(doc);
-        return 50; // Return yPos for new page
+        addFooter(doc);
+        return 40; // Return yPos for new page
     }
     return currentY;
 };
-export { generatePDF }
+
+export { generatePDF, checkPageOverflow }

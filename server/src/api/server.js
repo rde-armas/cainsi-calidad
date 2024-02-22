@@ -9,7 +9,6 @@ app.use(bodyParser.json());
 
 app.post('/receive-json', (req, res) => {
     const jsonData = req.body;
-    
     generatePDF(jsonData);
     res.send('JSON recibido correctamente');
 });
