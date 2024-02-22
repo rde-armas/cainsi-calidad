@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
 
-const GridInput = ({ gridData }) => {
+const GridInput = ({ inputName, gridData, onInputChange }) => {
 	const [gridDataCells, setGridDataCells] = useState({});
 
 	const renderItem = ({ item }) => {
@@ -20,6 +20,8 @@ const GridInput = ({ gridData }) => {
 			updatedGridData[title][rowIndex][colIndex] = text;
 			//console.log(gridDataCells);
 			setGridDataCells(updatedGridData);
+			console.log(inputName);
+			onInputChange(title, rowIndex, colIndex, text);
 		};
 
 		return (

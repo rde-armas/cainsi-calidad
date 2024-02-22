@@ -21,24 +21,48 @@ const initialInputs = {
 	propositoAlcance: 'Inspección de las superficies accesibles con la finalidad de descartar la existencia de deformaciones y severa corrosión localizada.',
 	preparacion: 'Limpieza. Iluminación apropiada.',
 	resultado:'',
-	scheme: '',
+	scheme: {id:'', grid: [], gridData: {}},
 	conclusion: '',
-};
-
-const schemeImage = {
-	id:'',
-	imageUri: null,
 };
 
 const MedicionEspesoresScreen = () => {
 	const [inputs, setInputs] = useState(initialInputs);
 	const [modalVisible, setModalVisible] = useState(false);
-	const [schemeImg, setScheme] =  useState(schemeImage)
+	const [schemeImg, setScheme] =  useState({
+		id:'',
+		grid: [],
+		imageUri: null,
+	});
 
 	const handleSchemeSet = (id, grid, imageUri) => {
 		setScheme((scheme) => ({ ...scheme, id, grid, imageUri }));
-		initialInputs.scheme = id;
+		initialInputs.scheme.id = id;
+		initialInputs.scheme.grid = grid;
 	};
+
+	const handleInputChangeGrid = (title, rowIndex, colIndex, text) => {
+		setInputs(prevInputs => {
+			const newInputs = { ...prevInputs };
+	
+			// Verificar si existe el objeto scheme y si tiene un objeto gridData
+			if (newInputs.scheme && newInputs.scheme.gridData) {
+				// Verificar si el objeto gridData ya tiene un objeto para el título dado
+				if (!newInputs.scheme.gridData[title]) {
+					newInputs.scheme.gridData[title] = []; // Inicializar como una matriz vacía
+				}
+				// Verificar si la fila en el índice rowIndex es una matriz
+				if (!Array.isArray(newInputs.scheme.gridData[title][rowIndex])) {
+					newInputs.scheme.gridData[title][rowIndex] = []; // Inicializar como una matriz vacía
+				}
+	
+				// Actualizar el valor en la matriz correspondiente al título y coordenadas dadas
+				newInputs.scheme.gridData[title][rowIndex][colIndex] = text;
+			}
+			return newInputs;
+		});
+	};
+	
+	
 
 	const handleInputChange = (inputName, value) => {
 		setInputs((prevInputs) => ({ ...prevInputs, [inputName]: value }));
@@ -68,14 +92,14 @@ const MedicionEspesoresScreen = () => {
 							margin:8,
 						}
 					}>
-						<NumberInputComponent inputName='minRange' label='Min' onInputChange={handleInputChange}/>
-						<NumberInputComponent inputName='maxRange' label='Max' onInputChange={handleInputChange}/>
+						<NumberInputComponent inputName='minRange' label='Min' defaultInput={initialInputs.minRange} onInputChange={handleInputChange}/>
+						<NumberInputComponent inputName='maxRange' label='Max' defaultInput={initialInputs.maxRange} onInputChange={handleInputChange}/>
 					</View>
 				</View>
 
 				<Text style={styles.label}>Ensayo visual</Text>
 				
-				<TextMultiLineInputComponent inputName='objeto' label='Objeto' onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='objeto' label='Objeto' defaultInput={initialInputs.objeto} onInputChange={handleInputChange} />
 				<TextMultiLineInputComponent inputName='propositoAlcance' label='Propósito y alcance' onInputChange={handleInputChange} />
 				<TextMultiLineInputComponent inputName='preparacion' label='Preparación' onInputChange={handleInputChange} />
 				<TextMultiLineInputComponent inputName='resultado' label='Resultado' onInputChange={handleInputChange} />
@@ -99,9 +123,9 @@ const MedicionEspesoresScreen = () => {
 								<SchemeList onSelectImage={(id, grid, image) => {
 									// Manejar el id de la imagen seleccionada aquí
 									// setear el id de la imagen en la lista de inputs
-										handleSchemeSet(id, grid, image)
-										console.log(`Imagen seleccionada con id: ${schemeImg}`);
-										setModalVisible(!modalVisible)
+										handleSchemeSet(id, grid, image);
+										console.log(grid);
+										setModalVisible(!modalVisible);
 									}}/>
 							</View>
 						</View>
@@ -120,7 +144,7 @@ const MedicionEspesoresScreen = () => {
 				{
 					schemeImg.id && (
 					<ScrollView horizontal>
-						<GridInput gridData= {schemeImg.grid} />
+						<GridInput inputName={'scheme.gridData'} gridData= {schemeImg.grid} onInputChange={handleInputChangeGrid} />
 					</ScrollView>)
 				}
 

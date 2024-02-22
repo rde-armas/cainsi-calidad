@@ -9,7 +9,9 @@ export default function SchemeList({ onSelectImage }) {
             ['Envolvente', ['A', 'B', 'C', 'D'], [1, 2, 3, 4, 5, 6]], 
             ['Casquete', ['Inferior','Superior'], [1, 2, 3, 4, 5, 6, 7, 8, 9]]
             ], source: require('../assets/scheme/3.png') },
-        { id: '4', source: require('../assets/scheme/4.png') },
+        { id: '4', grid:[
+            ['Resultado', ['Punto', 'Medicio'], [1, 2, 3]], 
+            ], source: require('../assets/scheme/4.png') },
         { id: '5', source: require('../assets/scheme/5.png') },
         { id: '6', source: require('../assets/scheme/6.png') },
         { id: '7', source: require('../assets/scheme/7.png') },
