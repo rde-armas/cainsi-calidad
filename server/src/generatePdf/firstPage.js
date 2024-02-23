@@ -7,7 +7,7 @@ function addHeader(pdf, path = LOGO_PATH) {
     const fillColor = "#aca899";
     pdf.setFillColor(fillColor);
     pdf.rect(30, 15, rectWidth, 1.2, 'F')
-    addImage(pdf, path, 'PNG', 40, 16, 80, 18);
+    addImage(pdf, path, '', 'PNG', 40, 16, 80, 18);
 }
 
 // Función para agregar pie de página
@@ -19,7 +19,7 @@ function addFooter(pdf) {
     pdf.text('CAINSI - Servicios Industriales\n\nwww.cainsi.com', pdf.internal.pageSize.width / 2, verticalCenter, { align: 'center' });
 }
 
-function createCover(pdf, deviceName, client, madeBy ) {
+function createCover(pdf, deviceName, client, madeBy, photoDivice ) {
     const pageWidth = pdf.internal.pageSize.width;
     const pageHeight = pdf.internal.pageSize.height;
 
@@ -61,11 +61,14 @@ function createCover(pdf, deviceName, client, madeBy ) {
     pdf.text(deviceName, pageWidth / 2, titleBottomLineY + 15, { align: 'center' });
 
     // Añadir imagen al centro
-    const imagePath = '../assets/Untitled.jpg'; 
-    const { width, height } = dimensionAspectRatio(imagePath, pageWidth - 80, 115);
+    // const imagePath = '../assets/Untitled.jpg'; 
+    // const { width, height } = dimensionAspectRatio(imagePath, pageWidth - 80, 115);
+    const { width, height } = dimensionAspectRatio(
+        '', pageWidth - 80, 115, photoDivice[1], photoDivice[2]
+        );
     const imageX = (pageWidth - width) / 2;
     const imageY = ((pageHeight - height) / 2) + 20;
-    addImage(pdf, imagePath, 'JPG', imageX, imageY, pageWidth - 80, 115);
+    addImage(pdf, '', photoDivice, 'PNG', imageX, imageY, pageWidth - 80, 115);
     pdf.rect(imageX - 3, imageY - 3, width + 6, height + 6);
 
     pdf.setFontSize(14);

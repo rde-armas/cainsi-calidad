@@ -7,7 +7,7 @@ const sendJSONToServer = async (jsonData) => {
             },
             body: JSON.stringify(jsonData),
         });
-        console.log(jsonData);
+        
         const responseData = await response.text();
         return responseData;
     } catch (error) {

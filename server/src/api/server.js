@@ -5,7 +5,7 @@ import { generatePDF } from '../generatePdf/index.js';
 const app = express();
 const PORT = 3000;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 app.post('/receive-json', (req, res) => {
     const jsonData = req.body;

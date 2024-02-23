@@ -9,6 +9,7 @@ import { sendJSONToServer } from '../../api/pdf';
 const initialInputs = {
 	dispositivo: 'Pulmón de aire vertical de grasería',
 	cliente: 'Marfrig – Establecimientos Colonia',
+	photoDivice: [] ,
 	elaborado: 'Ing. Manuel Cavalleri',
 	sitioInspeccion: 'Toda la superficie exterior del tanque.',
 	resolucion: '0.01',
@@ -61,11 +62,10 @@ const MedicionEspesoresScreen = () => {
 			return newInputs;
 		});
 	};
-	
-	
 
 	const handleInputChange = (inputName, value) => {
 		setInputs((prevInputs) => ({ ...prevInputs, [inputName]: value }));
+		console.log(inputName, inputs.photoDivice[2]);
 	};
 
 	const handleSubmit = () => {
@@ -148,7 +148,7 @@ const MedicionEspesoresScreen = () => {
 					</ScrollView>)
 				}
 
-				<PhotoInputComponent/>
+				<PhotoInputComponent inputName={'photoDivice'} onInputChange={handleInputChange}/>
 
 				<TextMultiLineInputComponent inputName='conclusion' label='conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
 				<Button title="Crear PDF" onPress={handleSubmit} />

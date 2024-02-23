@@ -3,21 +3,21 @@ import { checkPageOverflow } from './index.js';
 
 const addScheme = (doc, imageY, scheme, title) => {
     const imagePath = `../assets/${scheme.id}.png`;
-    console.log(scheme.id);
+    console.log('id de esquema ', scheme);
     const pageWidth = doc.internal.pageSize.width;
     const { width, height } = dimensionAspectRatio(imagePath, pageWidth - 110, 110);
     const imageX = (pageWidth - width) / 2;
-    let yPos = checkPageOverflow(doc, imageY, Math.max(width, height) + 14);
+    let yPos = checkPageOverflow(doc, imageY, Math.max(110, height) + 14);
     // title
     doc.setFont('Helvetica', 'normal');
     doc.setFontSize(14);
     doc.text(title, 30 , yPos);
     yPos += 7;
     doc.text('a. Esquema de medición', 40 , yPos);
-
-    addImage(doc, imagePath, 'PNG', imageX, yPos, width, 110);
+    yPos += 7;
+    addImage(doc, imagePath, '', 'PNG', imageX, yPos, width, 110);
     console.log(yPos, doc.internal.pageSize.height);
-    yPos += Math.max(width, height) + 10;
+    yPos += Math.max(110, height) + 8;
     console.log(yPos);
     yPos = addGrid(doc, scheme, yPos);
     return yPos;

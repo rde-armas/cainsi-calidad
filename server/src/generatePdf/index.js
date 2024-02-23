@@ -46,10 +46,11 @@ const sections = [
 ];
 
 const generatePDF = (data) => { 
-    const {dispositivo, cliente, elaborado} = data;
+    const {dispositivo, cliente, elaborado, photoDivice} = data;
+    console.log(photoDivice[100]);
     const doc = new jsPDF();
     addHeader(doc);
-    createCover(doc, dispositivo, cliente, elaborado);
+    createCover(doc, dispositivo, cliente, elaborado, photoDivice);
     addFooter(doc);
     doc.addPage(doc);
     addHeader(doc);
