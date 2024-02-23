@@ -53,6 +53,7 @@ const generatePDF = (data) => {
     addFooter(doc);
     doc.addPage(doc);
     addHeader(doc);
+    addFooter(doc);
     addContent(doc, data);
     doc.save('a4.pdf')
     console.log('asdf')
@@ -131,7 +132,7 @@ const addContent = (doc, data) => {
 
 const checkPageOverflow = (doc, currentY, addedHeight) => {
     const pageHeight = doc.internal.pageSize.height;
-    if (currentY + addedHeight > pageHeight - 30) {
+    if (currentY + addedHeight > pageHeight - 80) {
         doc.addPage();
         addHeader(doc);
         addFooter(doc);

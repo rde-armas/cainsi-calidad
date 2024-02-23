@@ -5,12 +5,12 @@ const addScheme = (doc, imageY, scheme) => {
     const imagePath = `../assets/${scheme.id}.png`;
     console.log(scheme.id);
     const pageWidth = doc.internal.pageSize.width;
-    const { width, height } = dimensionAspectRatio(imagePath, pageWidth - 110, 80);
+    const { width, height } = dimensionAspectRatio(imagePath, pageWidth - 110, 110);
     const imageX = (pageWidth - width) / 2;
-    let yPos = checkPageOverflow(doc, imageY, Math.max(height, 80));
-    addImage(doc, imagePath, 'PNG', imageX, yPos, 80, 80);
-    console.log(yPos);
-    yPos =+ Math.max(height, 80);
+    let yPos = checkPageOverflow(doc, imageY, Math.max(width, height));
+    addImage(doc, imagePath, 'PNG', imageX, yPos, width, 110);
+    console.log(yPos, doc.internal.pageSize.height);
+    yPos += Math.max(width, height) + 10;
     console.log(yPos);
     yPos = addGrid(doc, scheme, yPos);
     return yPos;
@@ -18,6 +18,7 @@ const addScheme = (doc, imageY, scheme) => {
 
 export { addScheme }
 const addGrid = (doc, scheme, yPos) => {
+    console.log('grid inicial',yPos);
     let scheme_temp = scheme;
     addToGridData(scheme_temp);
     const { gridData } = scheme_temp;
@@ -49,6 +50,9 @@ const addGrid = (doc, scheme, yPos) => {
         // Agregar título de la tabla
         doc.setFontSize(fontSize + 2);
         doc.text(title, 50, yPosGrid);
+        const fillColor = "#aca899";
+        doc.setFillColor(fillColor);
+        doc.rect(50, 15, 100, 1.2, 'F')
         yPosGrid += 7; // Aumentar la posición Y para los datos de la tabla
 
         // Dibujar celdas y agregar datos

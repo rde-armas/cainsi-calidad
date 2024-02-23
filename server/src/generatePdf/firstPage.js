@@ -12,9 +12,9 @@ function addHeader(pdf, path = LOGO_PATH) {
 
 // Función para agregar pie de página
 function addFooter(pdf) {
-    const lineHeight = 10; // Altura de línea
-    const verticalCenter = pdf.internal.pageSize.height - 30; // Posición vertical en el centro
-    pdf.setFontSize(10);
+    const lineHeight = 6; // Altura de línea
+    const verticalCenter = pdf.internal.pageSize.height - 18; // Posición vertical en el centro
+    pdf.setFontSize(8);
     pdf.setFont('Helvetica', 'bold');
     pdf.text('CAINSI - Servicios Industriales\n\nwww.cainsi.com', pdf.internal.pageSize.width / 2, verticalCenter, { align: 'center' });
 }
