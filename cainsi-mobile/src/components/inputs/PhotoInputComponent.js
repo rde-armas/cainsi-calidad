@@ -1,53 +1,70 @@
 import React, { useState } from 'react'
-import { launchCamera } from 'react-native-image-picker'
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import { View, Button, Image } from 'react-native'
 
 export default function Camara() {
-    const [image, setImage] = useState() 
+
     
-    const takePicture = () => {
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const openImagePicker = () => {
         const options = {
-            title: 'Tomar una Imagen',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-            includeBase64: true,
+        mediaType: 'photo',
+        includeBase64: false,
+        maxHeight: 2000,
+        maxWidth: 2000,
+        };
+
+        launchImageLibrary(options, (response) => {
+        if (response.didCancel) {
+            console.log('User cancelled image picker');
+        } else if (response.error) {
+            console.log('Image picker error: ', response.error);
+        } else {
+            let imageUri = response.uri || response.assets?.[0]?.uri;
+            setSelectedImage(imageUri);
         }
+        });
+    };
+  
+    handleCameraLaunch = () => {
+        const options = {
+            mediaType: 'photo',
+            includeBase64: true,
+            maxHeight: 2000,
+            maxWidth: 2000,
+        };
 
         launchCamera(options, response => {
+            console.log('Response = ', response);
             if (response.didCancel) {
-                console.log('User cancelled image picker')
+            console.log('User cancelled camera');
             } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error)
+            console.log('Camera Error: ', response.error);
             } else {
-                const uri = response.assets[0].uri
-                setImage(uri)
+            // Process the captured image
+            let imageUri = response.uri || response.assets?.[0]?.uri;
+            setSelectedImage(imageUri);
+            console.log(imageUri);
             }
-        
-        })
+        });
     }
     
     return (
-        <View>
-            <Image
-                style={{
-                    alignSelf: 'center',
-                    height: 200,
-                    width: 300,
-                    margin: 20,
-                    borderRadius: 15,
-                    borderWidth:2,
-                    borderColor: 'black',
-                }}
-                source={{ uri: image }}
-            />
-            <Button
-                title='Tomar Fotografia'
-                onPress={ takePicture }
-            />
-
-            
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+            {selectedImage && (
+                <Image
+                    source={{ uri: selectedImage }}
+                    style={{ flex: 1 }}
+                    resizeMode="contain"
+                />
+            )}
+            <View style={{ marginTop: 20 }}>
+            <Button title="De galeria" onPress={openImagePicker} />
+            </View>
+            <View style={{ marginTop: 20,marginBottom: 50 }}>
+            <Button title="Abrir camara" onPress={handleCameraLaunch} />
+            </View>
         </View>
-    )
+    );
 }

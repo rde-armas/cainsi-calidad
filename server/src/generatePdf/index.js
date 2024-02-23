@@ -80,14 +80,14 @@ const addContent = (doc, data) => {
             yPos = checkPageOverflow(doc, yPos, contentLines.length * 7 + titleLines.length * 6);
         } else if (section.content === 'scheme') {
             const {scheme} = data;
-            //console.log(scheme);
-            yPos = addScheme(doc, yPos, data.scheme);
+            yPos = addScheme(doc, yPos, data.scheme, section.title);
+            return;
         }  else if(section.content === 'ensayo'){
             titleLines = doc.splitTextToSize(section.title, maxWidth);
             doc.setFont('Helvetica', 'normal');
             doc.setFontSize(14);
             doc.text(xposTitle , yPos, titleLines);
-            yPos += titleLines.length * 6;
+            yPos += titleLines.length * 7;
             return;
         } else if (isNaN(parseInt(section.title[0]))) {
             //Title
@@ -112,7 +112,7 @@ const addContent = (doc, data) => {
         doc.setFont('Helvetica', 'normal');
         doc.setFontSize(14);
         doc.text(xposTitle , yPos, titleLines);
-        yPos += titleLines.length * 6;
+        yPos += titleLines.length * 7;
         
         //content
         doc.setFont('Helvetica', 'normal');

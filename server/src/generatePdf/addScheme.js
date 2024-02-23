@@ -1,13 +1,20 @@
 import { addImage, dimensionAspectRatio } from './addImage.js';
 import { checkPageOverflow } from './index.js';
 
-const addScheme = (doc, imageY, scheme) => {
+const addScheme = (doc, imageY, scheme, title) => {
     const imagePath = `../assets/${scheme.id}.png`;
     console.log(scheme.id);
     const pageWidth = doc.internal.pageSize.width;
     const { width, height } = dimensionAspectRatio(imagePath, pageWidth - 110, 110);
     const imageX = (pageWidth - width) / 2;
-    let yPos = checkPageOverflow(doc, imageY, Math.max(width, height));
+    let yPos = checkPageOverflow(doc, imageY, Math.max(width, height) + 14);
+    // title
+    doc.setFont('Helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text(title, 30 , yPos);
+    yPos += 7;
+    doc.text('a. Esquema de medición', 40 , yPos);
+
     addImage(doc, imagePath, 'PNG', imageX, yPos, width, 110);
     console.log(yPos, doc.internal.pageSize.height);
     yPos += Math.max(width, height) + 10;
@@ -18,7 +25,10 @@ const addScheme = (doc, imageY, scheme) => {
 
 export { addScheme }
 const addGrid = (doc, scheme, yPos) => {
-    console.log('grid inicial',yPos);
+    //subtitulo
+    doc.text('b. Resultados¹', 40 , yPos);
+    yPos += 7;
+    
     let scheme_temp = scheme;
     addToGridData(scheme_temp);
     const { gridData } = scheme_temp;

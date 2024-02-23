@@ -7,10 +7,10 @@ import GridInput from '../../components/inputs/GridInputs';
 import { sendJSONToServer } from '../../api/pdf';
 
 const initialInputs = {
-	dispositivo: '',
-	cliente: '',
-	elaborado: '',
-	sitioInspeccion: 'Superficies accesibles del cuerpo del depósito. Dispositivo térmicamente aislado y en servicio. Se ensayaron zonas descubiertas en la aislación térmica.',
+	dispositivo: 'Pulmón de aire vertical de grasería',
+	cliente: 'Marfrig – Establecimientos Colonia',
+	elaborado: 'Ing. Manuel Cavalleri',
+	sitioInspeccion: 'Toda la superficie exterior del tanque.',
 	resolucion: '0.01',
 	minRange: '0.5',
 	maxRange: '508',
@@ -20,9 +20,9 @@ const initialInputs = {
 	objeto: 'Todas las superficies accesibles y uniones soldadas del tanque.',
 	propositoAlcance: 'Inspección de las superficies accesibles con la finalidad de descartar la existencia de deformaciones y severa corrosión localizada.',
 	preparacion: 'Limpieza. Iluminación apropiada.',
-	resultado:'',
+	resultado:'Se observaron algunos desprendimientos del recubrimiento de pintura por acciones mecánicas exteriores (golpes y abrasiones)',
 	scheme: {id:'', grid: [], gridData: {}},
-	conclusion: '',
+	conclusion: 'No se detectaron zonas de bajo espesor, los valores medidos en una misma chapa no presentan severas diferencias entre sí.',
 };
 
 const MedicionEspesoresScreen = () => {
@@ -76,13 +76,13 @@ const MedicionEspesoresScreen = () => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView>
-				<TextInputComponent inputName='dispositivo' label='Dipositivo' onInputChange={handleInputChange} />
-				<TextInputComponent inputName='cliente' label='Cliente' onInputChange={handleInputChange} />
-				<TextInputComponent inputName='elaborado' label='Elaborado por' onInputChange={handleInputChange} />
+				<TextInputComponent inputName='dispositivo' label='Dipositivo' defaultInput={initialInputs.dispositivo} onInputChange={handleInputChange} />
+				<TextInputComponent inputName='cliente' label='Cliente' defaultInput={initialInputs.cliente} onInputChange={handleInputChange} />
+				<TextInputComponent inputName='elaborado' label='Elaborado por' defaultInput={initialInputs.elaborado} onInputChange={handleInputChange} />
 				<TextMultiLineInputComponent inputName='sitioInspeccion' label='Sitio bajo inspección' defaultInput={initialInputs.sitioInspeccion} onInputChange={handleInputChange} />
 				<View>
 					<Text>Equipamiento utilizado</Text>
-					<NumberInputComponent inputName='resolucion' label='Resolución en mm' onInputChange={handleInputChange}/>
+					<NumberInputComponent inputName='resolucion' label='Resolución en mm' defaultInput={initialInputs.resolucion} onInputChange={handleInputChange}/>
 					<Text>Rango de medida</Text>
 					<View style={
 						{
@@ -100,9 +100,9 @@ const MedicionEspesoresScreen = () => {
 				<Text style={styles.label}>Ensayo visual</Text>
 				
 				<TextMultiLineInputComponent inputName='objeto' label='Objeto' defaultInput={initialInputs.objeto} onInputChange={handleInputChange} />
-				<TextMultiLineInputComponent inputName='propositoAlcance' label='Propósito y alcance' onInputChange={handleInputChange} />
-				<TextMultiLineInputComponent inputName='preparacion' label='Preparación' onInputChange={handleInputChange} />
-				<TextMultiLineInputComponent inputName='resultado' label='Resultado' onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='propositoAlcance' label='Propósito y alcance' defaultInput={initialInputs.propositoAlcance} onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='preparacion' label='Preparación' defaultInput={initialInputs.preparacion} onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='resultado' label='Resultado' defaultInput={initialInputs.resultado} onInputChange={handleInputChange} />
 
 				<Text style={styles.label}>Mediciones de Ultasonido</Text>
 				<Text style={styles.label}>Aca van los equemas</Text>
@@ -150,7 +150,7 @@ const MedicionEspesoresScreen = () => {
 
 				<PhotoInputComponent/>
 
-				<TextMultiLineInputComponent inputName='conclusion' label='conclusion' onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='conclusion' label='conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
 				<Button title="Crear PDF" onPress={handleSubmit} />
 			</ScrollView>
 		</SafeAreaView>
