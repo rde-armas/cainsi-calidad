@@ -68,7 +68,7 @@ function createCover(pdf, deviceName, client, madeBy, photoDivice ) {
         );
     const imageX = (pageWidth - width) / 2;
     const imageY = ((pageHeight - height) / 2) + 20;
-    addImage(pdf, '', photoDivice, 'PNG', imageX, imageY, pageWidth - 80, 115);
+    addImage(pdf, '', photoDivice, 'JPEG', imageX, imageY, pageWidth - 80, 115);
     pdf.rect(imageX - 3, imageY - 3, width + 6, height + 6);
 
     pdf.setFontSize(14);

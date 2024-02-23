@@ -124,7 +124,6 @@ const MedicionEspesoresScreen = () => {
 									// Manejar el id de la imagen seleccionada aquí
 									// setear el id de la imagen en la lista de inputs
 										handleSchemeSet(id, grid, image);
-										console.log(grid);
 										setModalVisible(!modalVisible);
 									}}/>
 							</View>

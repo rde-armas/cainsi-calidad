@@ -12,7 +12,7 @@ export default function Camara({inputName, onInputChange}) {
             allowsEditing: true,
             quality: 1,
             base64: true,
-            imageExportType: 'png',
+            imageExportType: 'jpeg',
         });
 
         if (!result.canceled) {
@@ -27,7 +27,7 @@ export default function Camara({inputName, onInputChange}) {
             allowsEditing: true,
             quality: 1,
             base64: true,
-            imageExportType: 'png',
+            imageExportType: 'jpeg',
         });
 
         if (!result.canceled) {
@@ -38,7 +38,7 @@ export default function Camara({inputName, onInputChange}) {
 
     const saveImage = async (image) => {
         try {
-            let fileName = 'imagen.png';
+            let fileName = 'imagen.jpeg';
             let directory = FileSystem.documentDirectory;
             let destination = directory + fileName;
 
@@ -55,26 +55,29 @@ export default function Camara({inputName, onInputChange}) {
             }
 
             setSelectedImage(image);
+            console.log('Imagen guardada en:', selectedImage.uri);
         } catch (error) {
             console.error('Error al guardar la imagen:', error);
         }
     };
-
+    
     return (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-        {selectedImage && (
-            <Image
-            source={{ assets: selectedImage.uri }}
-            style={{ width: 200, height: 200 }}
-            resizeMode="contain"
-            />
-        )}
-        <View style={{ marginTop: 20 }}>
-            <Button title="De galeria" onPress={openImagePicker} />
-        </View>
-        <View style={{ marginTop: 20 }}>
-            <Button title="Abrir camara" onPress={handleCameraLaunch} />
-        </View>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {selectedImage && selectedImage.uri && (
+                <View style={{ alignItems: 'center' }}>
+                    <Image
+                        source={{ uri: selectedImage.uri }}
+                        style={{ width: 200, height: 200 }}
+                        resizeMode="contain"
+                    />
+                </View>
+            )}
+            <View style={{ marginTop: 20 }}>
+                <Button title="De galeria" onPress={openImagePicker} />
+            </View>
+            <View style={{ marginTop: 20 }}>
+                <Button title="Abrir camara" onPress={handleCameraLaunch} />
+            </View>
         </View>
     );
 }
