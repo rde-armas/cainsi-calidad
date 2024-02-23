@@ -40,7 +40,7 @@ const MedicionEspesoresScreen = () => {
 		initialInputs.scheme.id = id;
 		initialInputs.scheme.grid = grid;
 	};
-
+	
 	const handleInputChangeGrid = (title, rowIndex, colIndex, text) => {
 		setInputs(prevInputs => {
 			const newInputs = { ...prevInputs };
@@ -68,11 +68,30 @@ const MedicionEspesoresScreen = () => {
 		console.log(inputName, inputs.photoDivice[2]);
 	};
 
-	const handleSubmit = () => {
-		//console.log('Input values:', inputs);
-		sendJSONToServer(inputs);
+	const isObjectEmpty = (obj) => {
+		for (let key in obj) {
+			if (Array.isArray(obj[key]) && (obj[key].length === 0 || obj[key].includes(undefined))) {
+				return [true, key];
+			}
+			if (!obj[key] || obj[key] === '' || obj[key] === undefined) {
+				return [true, key];
+			}
+			if (typeof obj[key] === 'object' && isObjectEmpty(obj[key])) {
+				return [true, key];
+			}
+		}
+		return false;
 	};
 
+	const handleSubmit = () => {
+		const [isEmpty, key] = isObjectEmpty(inputs);
+		if (isEmpty) {
+		  alert(`Por favor complete el campo "${key}" antes de generar el PDF.`);
+		  return;
+		}
+		sendJSONToServer(inputs);
+	};
+	
 	const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
 
