@@ -25,31 +25,32 @@ const GridInput = ({ inputName, gridData, onInputChange }) => {
 		};
 
 		return (
-		<View style={styles.grid}>
-			<Text style={styles.gridTitle}>{title}</Text>
-			<View style={styles.gridRow}>
-			<Text style={styles.gridCell}></Text>
-			{columns.map((columnName, colIndex) => (
-				<Text key={colIndex} style={styles.gridCell}>{columnName}</Text>
-			))}
-			</View>
-			{rowsData.map((rowData, rowIndex) => (
-			<View key={rowIndex} style={styles.gridRow}>
-				<Text style={styles.gridCell}>{rowData}</Text>
-				{columns.map((column, colIndex) => (
-				<TextInput
-					key={colIndex}
-					style={styles.gridCell}
-					keyboardType="numeric"
-					value={gridDataCells[title]?.[rowIndex]?.[colIndex] || ''}
-					onChangeText={(text) => handleInputChange(rowIndex, colIndex, text)}
-				/>
+				<View style={styles.grid}>
+				<Text style={styles.gridTitle}>{title}</Text>
+				<View style={styles.gridRow}>
+					<Text style={[styles.gridCell, styles.gridCellNonInput]}></Text>
+					{columns.map((columnName, colIndex) => (
+					<Text key={colIndex} style={[styles.gridCell, styles.gridCellNonInput]}>{columnName}</Text>
+					))}
+				</View>
+				{rowsData.map((rowData, rowIndex) => (
+					<View key={rowIndex} style={styles.gridRow}>
+					<Text style={[styles.gridCell, styles.gridCellNonInput]}>{rowData}</Text>
+					{columns.map((column, colIndex) => (
+						<TextInput
+						key={colIndex}
+						style={styles.textInput}
+						keyboardType="numeric"
+						value={gridDataCells[title]?.[rowIndex]?.[colIndex] || ''}
+						onChangeText={(text) => handleInputChange(rowIndex, colIndex, text)}
+						/>
+					))}
+					</View>
 				))}
-			</View>
-			))}
-		</View>
-		);
-	};
+				</View>
+			);
+		};
+		
 
 	return (
 		<FlatList
@@ -63,10 +64,16 @@ const GridInput = ({ inputName, gridData, onInputChange }) => {
 const styles = StyleSheet.create({
 	grid: {
 		marginBottom: 20,
+		borderWidth: 1,
+		borderColor: 'gray',
+		borderRadius: 5,
+		padding: 10,
 	},
 	gridTitle: {
 		fontSize: 18,
 		fontWeight: 'bold',
+		marginBottom: 5,
+		flex: 1, // Hace que todas las celdas del título tengan el mismo tamaño
 	},
 	gridRow: {
 		flexDirection: 'row',
@@ -76,9 +83,22 @@ const styles = StyleSheet.create({
 	gridCell: {
 		borderWidth: 1,
 		borderColor: 'gray',
-		padding: 5,
-		flex: 1,
+		padding: 10,
+		flex: 1, // Hace que todas las celdas tengan el mismo tamaño
+		textAlign: 'center',
+	},
+	textInput: {
+		flex: 1, // Hace que todas las celdas de entrada de texto tengan el mismo tamaño
+		borderWidth: 1,
+		borderColor: 'gray',
+		padding: 10,
+		textAlign: 'center',
+	},
+	gridCellNonInput: {
+		backgroundColor: '#c0c0c0', // Color de fondo gris claro
 	},
 });
+  
+  
 
 export default GridInput;
