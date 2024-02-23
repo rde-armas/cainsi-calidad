@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, SafeAreaView, Modal, Button, View, StyleSheet, Text, ScrollView, Pressable} from 'react-native';
+import { Alert, Image, SafeAreaView, Modal, Button, View, StyleSheet, Text, ScrollView, Pressable, Dimensions} from 'react-native';
 import { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent } from '../../components/inputs/InputsComponents';
 import PhotoInputComponent from '../../components/inputs/PhotoInputComponent';
 import SchemeList from '../../components/SchemeList';
@@ -73,10 +73,14 @@ const MedicionEspesoresScreen = () => {
 		sendJSONToServer(inputs);
 	};
 
+	const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView>
 				<TextInputComponent inputName='dispositivo' label='Dipositivo' defaultInput={initialInputs.dispositivo} onInputChange={handleInputChange} />
+				<PhotoInputComponent inputName={'photoDivice'} onInputChange={handleInputChange}/>
 				<TextInputComponent inputName='cliente' label='Cliente' defaultInput={initialInputs.cliente} onInputChange={handleInputChange} />
 				<TextInputComponent inputName='elaborado' label='Elaborado por' defaultInput={initialInputs.elaborado} onInputChange={handleInputChange} />
 				<TextMultiLineInputComponent inputName='sitioInspeccion' label='Sitio bajo inspección' defaultInput={initialInputs.sitioInspeccion} onInputChange={handleInputChange} />
@@ -105,7 +109,6 @@ const MedicionEspesoresScreen = () => {
 				<TextMultiLineInputComponent inputName='resultado' label='Resultado' defaultInput={initialInputs.resultado} onInputChange={handleInputChange} />
 
 				<Text style={styles.label}>Mediciones de Ultasonido</Text>
-				<Text style={styles.label}>Aca van los equemas</Text>
 				
 				{/* PopUP SchemeList */}
 				
@@ -142,15 +145,27 @@ const MedicionEspesoresScreen = () => {
 
 				{
 					schemeImg.id && (
-					<ScrollView horizontal>
-						<GridInput inputName={'scheme.gridData'} gridData= {schemeImg.grid} onInputChange={handleInputChangeGrid} />
-					</ScrollView>)
+					<>
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
+							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
+								<Image
+									source={schemeImg.imageUri}
+									style={{ flex: 1, width: undefined, height: undefined }}
+									resizeMode="contain"
+								/>
+							</View>
+						</View>
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
+							<ScrollView horizontal>
+								<GridInput inputName={'scheme.gridData'} gridData= {schemeImg.grid} onInputChange={handleInputChangeGrid} />
+							</ScrollView>
+						</View>
+					</>)
 				}
-
-				<PhotoInputComponent inputName={'photoDivice'} onInputChange={handleInputChange}/>
-
 				<TextMultiLineInputComponent inputName='conclusion' label='conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
-				<Button title="Crear PDF" onPress={handleSubmit} />
+				<View style={{ margin: 20 }}>
+ 					<Button title="Crear PDF" onPress={handleSubmit} />
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -173,7 +188,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		borderRadius: 20,
 		padding: 35,
-		shadowColor: '#000',
+		//shadowColor: '#000',
 		shadowOffset: {
 			width: 0,
 			height: 2,
@@ -183,15 +198,12 @@ const styles = StyleSheet.create({
 		elevation: 5,
 	},
 	button: {
-		borderRadius: 20,
+		borderRadius: 5,
 		padding: 10,
 		elevation: 2,
 	},
 	buttonOpen: {
-		backgroundColor: '#F194FF',
-	},
-	buttonClose: {
-		backgroundColor: '#2196F3',
+		backgroundColor: '#1590f2',
 	},
 	textStyle: {
 		color: 'white',

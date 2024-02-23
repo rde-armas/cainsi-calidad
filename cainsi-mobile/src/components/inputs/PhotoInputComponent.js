@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Image, Platform } from 'react-native';
+import { View, Button, Image, Platform, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
@@ -61,22 +61,27 @@ export default function Camara({inputName, onInputChange}) {
         }
     };
     
+    // Obtener las dimensiones de la pantalla
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
+
+    // Dentro de tu componente
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             {selectedImage && selectedImage.uri && (
-                <View style={{ alignItems: 'center' }}>
+                <View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
                     <Image
-                        source={{ uri: selectedImage.uri }}
-                        style={{ width: 200, height: 200 }}
+                        source={{ uri: `data:image/jpeg;base64,${selectedImage.base64}`}}
+                        style={{ flex: 1, width: undefined, height: undefined }}
                         resizeMode="contain"
                     />
                 </View>
             )}
+            {/* <View style={{ marginTop: 20 }}>
+                <Button title="De galeria" onPress={openImagePicker} style={{}} />
+            </View> */}
             <View style={{ marginTop: 20 }}>
-                <Button title="De galeria" onPress={openImagePicker} />
-            </View>
-            <View style={{ marginTop: 20 }}>
-                <Button title="Abrir camara" onPress={handleCameraLaunch} />
+                <Button title="Tomar Foto" onPress={handleCameraLaunch} />
             </View>
         </View>
     );
