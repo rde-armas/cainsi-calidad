@@ -5,6 +5,7 @@ import PhotoInputComponent from '../../components/inputs/PhotoInputComponent';
 import SchemeList from '../../components/SchemeList';
 import GridInput from '../../components/inputs/GridInputs';
 import { sendJSONToServer } from '../../api/pdf';
+import { saveJSONToDevice } from '../../utils/saveJSONToDevice';
 
 const initialInputs = {
 	dispositivo: 'Pulmón de aire vertical de grasería',
@@ -55,7 +56,6 @@ const MedicionEspesoresScreen = () => {
 				if (!Array.isArray(newInputs.scheme.gridData[title][rowIndex])) {
 					newInputs.scheme.gridData[title][rowIndex] = []; // Inicializar como una matriz vacía
 				}
-	
 				// Actualizar el valor en la matriz correspondiente al título y coordenadas dadas
 				newInputs.scheme.gridData[title][rowIndex][colIndex] = text;
 			}
@@ -70,25 +70,35 @@ const MedicionEspesoresScreen = () => {
 
 	const isObjectEmpty = (obj) => {
 		for (let key in obj) {
-			if (Array.isArray(obj[key]) && (obj[key].length === 0 || obj[key].includes(undefined))) {
-				return [true, key];
-			}
-			if (!obj[key] || obj[key] === '' || obj[key] === undefined) {
-				return [true, key];
-			}
-			if (typeof obj[key] === 'object' && isObjectEmpty(obj[key])) {
-				return [true, key];
+			if (Array.isArray(obj[key])) {
+				if (obj[key].length === 0 || obj[key].some(item => item === undefined)) {
+					return [true, key];
+				}
+			} else if (!obj[key] || obj[key] === '' || obj[key] === undefined) {
+			  	return [true, key];
+			} else if (typeof obj[key] === 'object') {
+				const [isEmpty, nestedKey] = isObjectEmpty(obj[key]);
+				if (isEmpty) {
+					return [true, nestedKey];
+				}
 			}
 		}
-		return false;
+		
+		if (Object.keys(obj).length === 0) {
+			return [true, 'de la tabla'];
+		}
+
+		return [false, null];
 	};
 
 	const handleSubmit = () => {
-		const [isEmpty, key] = isObjectEmpty(inputs);
-		if (isEmpty) {
+		const key = isObjectEmpty(inputs)[1];
+		if (isObjectEmpty(inputs)[0]) {
 		  alert(`Por favor complete el campo "${key}" antes de generar el PDF.`);
 		  return;
 		}
+		console.log(inputs.scheme);
+		saveJSONToDevice(inputs);
 		sendJSONToServer(inputs);
 	};
 	
