@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Alert } from 'react-native';
-import { ReportContext } from '../components/context/AppContext';
+import { ReportContextApp } from '../components/context/AppContext';
 import { MedicionEspesoresScreen } from './reports/MedicionEspesoresScreen'; 
 import Empty from './reports/Empty';
 
 export default function ReportScreen() {
-    const { report } = React.useContext(ReportContext);
+    const { report } = React.useContext(ReportContextApp);
 
     const showAlert = () => {
         Alert.alert(

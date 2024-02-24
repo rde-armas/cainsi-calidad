@@ -1,8 +1,8 @@
 import React from "react";
 
-const ReportContext = React.createContext({});
+const ReportContextApp = React.createContext({});
 
-function ReportProvider({children}) {
+function ReportContextAppProvider({children}) {
     const [report, setReport] = React.useState(null);
 
     const setReportUse = (report) => {
@@ -13,15 +13,20 @@ function ReportProvider({children}) {
         return report;
     };
 
+    const resetReport = () => {
+        setReport(null); // Reinicia el reporte a null
+    };
+
     return (
-        <ReportContext.Provider value={{
+        <ReportContextApp.Provider value={{
             setReportUse,
             getReport,
+            resetReport,
             report,
         }}>
             {children}
-        </ReportContext.Provider>
+        </ReportContextApp.Provider>
     );
 }
 
-export { ReportContext, ReportProvider };
+export { ReportContextApp, ReportContextAppProvider };

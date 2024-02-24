@@ -1,26 +1,31 @@
 import { SafeAreaView, Image, StyleSheet, TouchableOpacity, View, Dimensions, Text, Alert } from 'react-native';
 import React from 'react';
-import { ReportContext } from '../components/context/AppContext';
+import { ReportContextApp } from '../components/context/AppContext';
+import { ReportContext } from '../components/context/ReportContext';
 
 export default function HomeScreen(props) {
   	const { navigation } = props;
 
-	const { setReportUse, report } = React.useContext(ReportContext);
+	const { setReportUse, report } = React.useContext(ReportContextApp);
+	const { resetReportValues, setReportValues, reportInputs } = React.useContext(ReportContext);
 
 	const goToReport = (reportName) => {
-		if (report) {
+		console.log(reportName, report);
+		if (report != null && report !== reportName) {
 			Alert.alert(
 				"Advertencia",
 				"Perderás el trabajo del reporte en el que ya estabas trabajando. ¿Deseas continuar?",
 				[
 					{ text: "Cancelar", style: "cancel" },
 					{ text: "Continuar", onPress: () => {
+						resetReportValues(reportName);
 						setReportUse(reportName);
 						navigation.navigate("Report");
 					}}
 				]
 			);
 		} else {
+			setReportValues(reportName);
 			setReportUse(reportName);
 			navigation.navigate("Report");
 		}

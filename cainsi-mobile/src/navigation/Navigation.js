@@ -4,8 +4,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ReportScreen from '../screens/ReportScreen';
-import ReportsQueueScreen from '../screens/ReportsQueueScreen';
-
+import ReportsQueueNavigation from '../screens/ReportsQueueScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +22,7 @@ export default function Navigation() {
                 
             }}/>
 
-            <Tab.Screen name='ReportsQueue' component={ReportsQueueScreen} options={{
+            <Tab.Screen name='ReportsQueue' component={ReportsQueueNavigation} options={{
                 tabBarLabel: "Cola de Reportes",
                 tabBarIcon: ({ color, size }) => <Icon name="albums" color={color} size={size} />,
             }} />
