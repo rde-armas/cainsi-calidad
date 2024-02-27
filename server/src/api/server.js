@@ -7,10 +7,19 @@ const PORT = 3000;
 
 app.use(bodyParser.json({ limit: '50mb' }));
 
-app.post('/receive-json', (req, res) => {
-    const jsonData = req.body;
-    generatePDF(jsonData);
-    res.send('JSON recibido correctamente');
+app.post('/receive-json', async (req, res) => {
+    try {
+        const jsonData = req.body;
+        const pdfUrl = generatePDF(jsonData);
+        
+        // Enviamos el PDF como respuesta
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename="documento.pdf"'); // Cambiar el nombre del archivo si es necesario
+        res.send(pdfUrl);
+    } catch (error) {
+        console.error('Error al generar o enviar el PDF:', error);
+        res.status(500).send('Error al generar o enviar el PDF');
+    }
 });
 
 app.listen(PORT, () => {

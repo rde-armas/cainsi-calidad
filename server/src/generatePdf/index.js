@@ -56,8 +56,9 @@ const generatePDF = (data) => {
     addHeader(doc);
     addFooter(doc);
     addContent(doc, data);
-    doc.save('a4.pdf')
-    console.log('asdf')
+    //doc.save('a4.pdf')
+    //console.log('asdf')
+    return doc.output('bloburl');
 }
 
 // Función para agregar contenido
