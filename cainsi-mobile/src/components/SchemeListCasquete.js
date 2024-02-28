@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
 import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function SchemeList({ onSelectImage }) {
+export default function SchemeListCasquete({ onSelectImage }) {
     const images = [
-        { id: '1', grid:[[]],source: require('../assets/scheme/1.png') },
-        { id: '2', source: require('../assets/scheme/2.png') },
-        { id: '3', grid:[
+        { id: '1', source: require('../assets/scheme/casquetes/1.png') },
+        { id: '2', grid:[
             ['Envolvente', ['A', 'B', 'C', 'D'], [1, 2, 3, 4, 5, 6]], 
             ['Casquete', ['Inferior','Superior'], [1, 2, 3, 4, 5, 6, 7, 8, 9]]
-            ], source: require('../assets/scheme/3.png') },
-        { id: '4', grid:[
+            ], source: require('../assets/scheme/casquetes/2.png') },
+        { id: '3', grid:[
             ['Resultado', ['Punto', 'Medicio'], [1, 2, 3]], 
-            ], source: require('../assets/scheme/4.png') },
-        { id: '5', source: require('../assets/scheme/5.png') },
-        { id: '6', source: require('../assets/scheme/6.png') },
-        { id: '7', source: require('../assets/scheme/7.png') },
-        { id: '8', source: require('../assets/scheme/8.png') },
+            ], source: require('../assets/scheme/casquetes/3.png') },
+
     ];
 
     const handleImagePress = (id, grid, image) => {
