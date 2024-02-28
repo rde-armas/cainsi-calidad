@@ -7,15 +7,16 @@ import GridInput from '../../components/inputs/GridInputs';
 import { sendJSONToServer } from '../../api/pdf';
 import { saveJSONToDevice } from '../../utils/saveJSONToDevice';
 import { ReportContext } from '../../components/context/ReportContext';
-
+import { envolventes, casquetes } from '../../utils/constants';
 
 const MedicionEspesoresScreen = () => {
 	const { reportInputs } = React.useContext(ReportContext);
 	
 	let initialInputs = reportInputs;
-	console.log(initialInputs);
+	//console.log(initialInputs);
 	const [inputs, setInputs] = useState(initialInputs);
-	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisibleEnvolventes, setModalVisibleEnvoventes] = useState(false);
+	const [modalVisibleCasquetes, setModalVisibleCasquetes] = useState(false);
 	const [schemeImg, setScheme] =  useState({
 		id:'',
 		grid: [],
@@ -51,7 +52,6 @@ const MedicionEspesoresScreen = () => {
 
 	const handleInputChange = (inputName, value) => {
 		setInputs((prevInputs) => ({ ...prevInputs, [inputName]: value }));
-		console.log(inputName, inputs.photoDivice[2]);
 	};
 
 	const isObjectEmpty = (obj) => {
@@ -125,16 +125,16 @@ const MedicionEspesoresScreen = () => {
 
 				<Text style={styles.label}>Mediciones de Ultasonido</Text>
 				
-				{/* PopUP SchemeList */}
+				{/* PopUP SchemeListencolvente */}
 				
 				<View style={styles.centeredView}>
 					<Modal
 						animationType="slide"
 						transparent={true}
-						visible={modalVisible}
+						visible={modalVisibleEnvolventes}
 						onRequestClose={() => {
 							Alert.alert('No seleccioné ningún esquema.');
-							setModalVisible(!modalVisible);
+							setModalVisibleEnvoventes(!modalVisibleEnvolventes);
 						}}>
 						<View style={styles.centeredView}>
 							<View style={styles.modalView}>
@@ -142,21 +142,50 @@ const MedicionEspesoresScreen = () => {
 									// Manejar el id de la imagen seleccionada aquí
 									// setear el id de la imagen en la lista de inputs
 										handleSchemeSet(id, grid, image);
-										setModalVisible(!modalVisible);
-									}}/>
+										setModalVisibleEnvoventes(!modalVisibleEnvolventes);
+									}} images={envolventes}/>
 							</View>
 						</View>
 					</Modal>
 					<Pressable
 						style={[styles.button, styles.buttonOpen]}
-						onPress={() => setModalVisible(true)}>
-						<Text style={styles.textStyle}>Seleccionar esquema</Text>
+						onPress={() => setModalVisibleEnvoventes(true)}>
+						<Text style={styles.textStyle}>Seleccionar Envolvente</Text>
 					</Pressable>
 				</View>
-				{
 
-				}
-				{/* PopUP SchemeList end*/}
+				{/* PopUP SchemeList envolventes end*/}
+
+				{/* PopUP casquetes */}
+				
+				<View style={styles.centeredView}>
+					<Modal
+						animationType="slide"
+						transparent={true}
+						visible={modalVisibleCasquetes}
+						onRequestClose={() => {
+							Alert.alert('No seleccioné ningún esquema.');
+							setModalVisibleCasquetes(!modalVisibleCasquetes);
+						}}>
+						<View style={styles.centeredView}>
+							<View style={styles.modalView}>
+								<SchemeList onSelectImage={(id, grid, image) => {
+									// Manejar el id de la imagen seleccionada aquí
+									// setear el id de la imagen en la lista de inputs
+										handleSchemeSet(id, grid, image);
+										setModalVisibleCasquetes(!modalVisibleCasquetes);
+									}} images={casquetes}/>
+							</View>
+						</View>
+					</Modal>
+					<Pressable
+						style={[styles.button, styles.buttonOpen]}
+						onPress={() => setModalVisibleCasquetes(true)}>
+						<Text style={styles.textStyle}>Seleccionar Casquete</Text>
+					</Pressable>
+				</View>
+
+				{/* PopUP SchemeList casquetes end*/}
 
 				{
 					schemeImg.id && (

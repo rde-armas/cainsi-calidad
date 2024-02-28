@@ -1,18 +1,6 @@
-import React, { useState } from 'react';
 import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function SchemeListCasquete({ onSelectImage }) {
-    const images = [
-        { id: '1', source: require('../assets/scheme/casquetes/1.png') },
-        { id: '2', grid:[
-            ['Envolvente', ['A', 'B', 'C', 'D'], [1, 2, 3, 4, 5, 6]], 
-            ['Casquete', ['Inferior','Superior'], [1, 2, 3, 4, 5, 6, 7, 8, 9]]
-            ], source: require('../assets/scheme/casquetes/2.png') },
-        { id: '3', grid:[
-            ['Resultado', ['Punto', 'Medicio'], [1, 2, 3]], 
-            ], source: require('../assets/scheme/casquetes/3.png') },
-
-    ];
+export default function SchemeListEnvolvente({ onSelectImage, images }) {
 
     const handleImagePress = (id, grid, image) => {
         onSelectImage(id, grid, image);
@@ -34,7 +22,6 @@ export default function SchemeListCasquete({ onSelectImage }) {
                 />
                 </TouchableOpacity>
             )}
-            contentContainerStyle={style.flatListContentContainer}
         />
     );
 }
