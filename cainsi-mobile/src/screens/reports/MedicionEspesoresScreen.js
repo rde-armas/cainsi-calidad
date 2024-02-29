@@ -18,16 +18,29 @@ const MedicionEspesoresScreen = () => {
 	const [modalVisibleEnvolventes, setModalVisibleEnvoventes] = useState(false);
 	const [modalVisibleCasquetes, setModalVisibleCasquetes] = useState(false);
 	const [schemeImg, setScheme] =  useState({
-		id:'',
+		idEnvolvente:'',
+		idCasquete: '',
 		grid: [],
-		imageUri: null,
+		imageUriEnv: null,
+		imageUriCas: null,
 	});
+	
 
-	const handleSchemeSet = (id, grid, imageUri) => {
-		setScheme((scheme) => ({ ...scheme, id, grid, imageUri }));
-		initialInputs.scheme.id = id;
-		initialInputs.scheme.grid = grid;
+	const handleSchemeSet = (idEnvolvente, grid, imageUriEnv, idCasquete='', imageUriCas='') => {
+		setScheme((scheme) => (
+			{ ...scheme, idEnvolvente, idCasquete, grid, imageUriEnv, imageUriCas, }
+			));
+		// initialInputs.scheme.id = id;
+		// initialInputs.scheme.grid = grid;
 	};
+
+	const handleCasqueteSet = (id, list, img) => {
+		console.log('lugar de donde se coloca la lista', schemeImg.grid);
+		schemeImg.grid[1].push(list);
+		schemeImg.imageUriCas = img;
+		schemeImg.idCasquete = id;
+		console.log('final', schemeImg.grid);
+	}
 	
 	const handleInputChangeGrid = (title, rowIndex, colIndex, text) => {
 		setInputs(prevInputs => {
@@ -123,7 +136,7 @@ const MedicionEspesoresScreen = () => {
 				<TextMultiLineInputComponent inputName='preparacion' label='Preparación' defaultInput={initialInputs.preparacion} onInputChange={handleInputChange} />
 				<TextMultiLineInputComponent inputName='resultado' label='Resultado' defaultInput={initialInputs.resultado} onInputChange={handleInputChange} />
 
-				<Text style={styles.label}>Mediciones de Ultasonido</Text>
+				<Text style={styles.label}>Mediciones de Ultrasonido</Text>
 				
 				{/* PopUP SchemeListencolvente */}
 				
@@ -156,44 +169,60 @@ const MedicionEspesoresScreen = () => {
 
 				{/* PopUP SchemeList envolventes end*/}
 
-				{/* PopUP casquetes */}
-				
-				<View style={styles.centeredView}>
-					<Modal
-						animationType="slide"
-						transparent={true}
-						visible={modalVisibleCasquetes}
-						onRequestClose={() => {
-							Alert.alert('No seleccioné ningún esquema.');
-							setModalVisibleCasquetes(!modalVisibleCasquetes);
-						}}>
-						<View style={styles.centeredView}>
-							<View style={styles.modalView}>
-								<SchemeList onSelectImage={(id, grid, image) => {
-									// Manejar el id de la imagen seleccionada aquí
-									// setear el id de la imagen en la lista de inputs
-										handleSchemeSet(id, grid, image);
-										setModalVisibleCasquetes(!modalVisibleCasquetes);
-									}} images={casquetes}/>
+				{
+					schemeImg.idEnvolvente && (
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
+							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
+								<Image
+									source={schemeImg.imageUriEnv}
+									style={{ flex: 1, width: undefined, height: undefined }}
+									resizeMode="contain"
+								/>
 							</View>
 						</View>
-					</Modal>
-					<Pressable
-						style={[styles.button, styles.buttonOpen]}
-						onPress={() => setModalVisibleCasquetes(true)}>
-						<Text style={styles.textStyle}>Seleccionar Casquete</Text>
-					</Pressable>
-				</View>
+					)
+				}
+				{/* PopUP casquetes */}
+				{
+					schemeImg.idEnvolvente && (
+					<View style={styles.centeredView}>
+						<Modal
+							animationType="slide"
+							transparent={true}
+							visible={modalVisibleCasquetes}
+							onRequestClose={() => {
+								Alert.alert('No seleccioné ningún esquema.');
+								setModalVisibleCasquetes(!modalVisibleCasquetes);
+							}}>
+							<View style={styles.centeredView}>
+								<View style={styles.modalView}>
+									<SchemeList onSelectImage={(id, grid, image) => {
+										// Manejar el id de la imagen seleccionada aquí
+										// setear el id de la imagen en la lista de inputs
+											handleCasqueteSet(id, grid, image);
+											setModalVisibleCasquetes(!modalVisibleCasquetes);
+										}} images={casquetes}/>
+								</View>
+							</View>
+						</Modal>
+						<Pressable
+							style={[styles.button, styles.buttonOpen]}
+							onPress={() => setModalVisibleCasquetes(true)}>
+							<Text style={styles.textStyle}>Seleccionar Casquete</Text>
+						</Pressable>
+					</View>
+					)
+				}
 
 				{/* PopUP SchemeList casquetes end*/}
 
 				{
-					schemeImg.id && (
+					schemeImg.idCasquete && (
 					<>
 						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
 							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
 								<Image
-									source={schemeImg.imageUri}
+									source={schemeImg.imageUriCas}
 									style={{ flex: 1, width: undefined, height: undefined }}
 									resizeMode="contain"
 								/>
@@ -206,7 +235,7 @@ const MedicionEspesoresScreen = () => {
 						</View>
 					</>)
 				}
-				<TextMultiLineInputComponent inputName='conclusion' label='conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='onclusion' label='Conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
 				<View style={{ margin: 20 }}>
  					<Button title="Crear PDF" onPress={handleSubmit} />
 				</View>
