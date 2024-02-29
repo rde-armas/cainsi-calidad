@@ -2,10 +2,11 @@ import { addImage, dimensionAspectRatio } from './addImage.js';
 import { checkPageOverflow } from './index.js';
 
 const addScheme = (doc, imageY, scheme, title) => {
-    const imagePath = `../assets/${scheme.id}.png`;
-    console.log('id de esquema ', scheme);
+    const imagePathEnv = `../assets/${scheme.idEnvolvente}.png`;
+    const imagePathCas = `../assets/${scheme.idCasquete}.png`;
+
     const pageWidth = doc.internal.pageSize.width;
-    const { width, height } = dimensionAspectRatio(imagePath, pageWidth - 110, 110);
+    const { width, height } = dimensionAspectRatio(imagePathEnv, pageWidth - 110, 110);
     const imageX = (pageWidth - width) / 2;
     let yPos = checkPageOverflow(doc, imageY, Math.max(110, height) + 14);
     // title
@@ -15,7 +16,7 @@ const addScheme = (doc, imageY, scheme, title) => {
     yPos += 7;
     doc.text('a. Esquema de medición', 40 , yPos);
     yPos += 7;
-    addImage(doc, imagePath, '', 'PNG', imageX, yPos, width, 110);
+    addImage(doc, imagePathEnv, '', 'PNG', imageX, yPos, width, 110);
     console.log(yPos, doc.internal.pageSize.height);
     yPos += Math.max(110, height) + 8;
     console.log(yPos);
