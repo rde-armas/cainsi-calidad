@@ -16,7 +16,7 @@ export default function Camara({inputName, onInputChange}) {
 		});
 
 		if (!result.canceled) {
-			saveImage(result.assets[0]);
+			//saveImage(result.assets[0]);
 			onInputChange(inputName, [result.assets[0].base64, result.assets[0].width, result.assets[0].height]);
 		}
 	};
@@ -31,7 +31,7 @@ export default function Camara({inputName, onInputChange}) {
 		});
 
 		if (!result.canceled) {
-			saveImage(result.assets[0]);
+			//saveImage(result.assets[0]);
 			onInputChange(inputName, [result.assets[0].base64, result.assets[0].width, result.assets[0].height]);
 		}
 	};
@@ -77,9 +77,9 @@ export default function Camara({inputName, onInputChange}) {
 					/>
 				</View>
 			)}
-			{/* <View style={{ marginTop: 20 }}>
-				<Button title="De galeria" onPress={openImagePicker} style={{}} />
-			</View> */}
+			<View style={{ marginTop: 20 }}>
+				<Button title="De galeria" onPress={openImagePicker} />
+			</View>
 			<View style={{ marginTop: 20 }}>
 				<Button title="Tomar Foto" onPress={handleCameraLaunch} />
 			</View>

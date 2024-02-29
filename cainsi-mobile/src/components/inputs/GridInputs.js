@@ -18,9 +18,7 @@ const GridInput = ({ inputName, gridData, onInputChange }) => {
 				updatedGridData[title][rowIndex] = [];
 			}
 			updatedGridData[title][rowIndex][colIndex] = text;
-			//console.log(gridDataCells);
 			setGridDataCells(updatedGridData);
-			console.log(inputName);
 			onInputChange(title, rowIndex, colIndex, text);
 		};
 

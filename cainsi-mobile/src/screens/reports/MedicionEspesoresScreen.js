@@ -35,7 +35,9 @@ const MedicionEspesoresScreen = () => {
 		schemeImg.grid[1].push(list);
 		schemeImg.imageUriCas = img;
 		schemeImg.idCasquete = id;
-		inputs.scheme = schemeImg;
+		inputs.scheme.grid = schemeImg.grid;
+		inputs.scheme.idCasquete = id;
+		inputs.scheme.idEnvolvente = schemeImg.idEnvolvente;
 	}
 	
 	const handleInputChangeGrid = (title, rowIndex, colIndex, text) => {
@@ -55,6 +57,7 @@ const MedicionEspesoresScreen = () => {
 				// Actualizar el valor en la matriz correspondiente al título y coordenadas dadas
 				newInputs.scheme.gridData[title][rowIndex][colIndex] = text;
 			}
+			console.log(newInputs.scheme);
 			return newInputs;
 		});
 	};
@@ -92,7 +95,7 @@ const MedicionEspesoresScreen = () => {
 		  alert(`Por favor complete el campo "${key}" antes de generar el PDF.`);
 		  return;
 		}
-		console.log(inputs.scheme);
+		console.log(inputs.scheme.gridData);
 		saveJSONToDevice(inputs);
 		sendJSONToServer(inputs);
 	};

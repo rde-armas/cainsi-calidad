@@ -2,24 +2,36 @@ import { addImage, dimensionAspectRatio } from './addImage.js';
 import { checkPageOverflow } from './index.js';
 
 const addScheme = (doc, imageY, scheme, title) => {
-    const imagePathEnv = `../assets/${scheme.idEnvolvente}.png`;
-    const imagePathCas = `../assets/${scheme.idCasquete}.png`;
-
     const pageWidth = doc.internal.pageSize.width;
-    const { width, height } = dimensionAspectRatio(imagePathEnv, pageWidth - 110, 110);
-    const imageX = (pageWidth - width) / 2;
-    let yPos = checkPageOverflow(doc, imageY, Math.max(110, height) + 14);
+    
+    const imagePathEnv = `../assets/envolventes/${scheme.idEnvolvente}.png`;
+    const imagePathCas = `../assets/casquetes/${scheme.idCasquete}.png`;
+
+    const { width, height } = dimensionAspectRatio(imagePathEnv, pageWidth - 90, 90);
+    const imageXEnv = (pageWidth - width) / 2;
+    let yPos = checkPageOverflow(doc, imageY, Math.max(90, height) + 14);
+    
     // title
-    doc.setFont('Helvetica', 'normal');
     doc.setFontSize(14);
     doc.text(title, 30 , yPos);
     yPos += 7;
     doc.text('a. Esquema de medición', 40 , yPos);
     yPos += 7;
-    addImage(doc, imagePathEnv, '', 'PNG', imageX, yPos, width, 110);
-    console.log(yPos, doc.internal.pageSize.height);
-    yPos += Math.max(110, height) + 8;
-    console.log(yPos);
+    doc.text('- Envolventes', 50 , yPos);
+    yPos += 7;
+    addImage(doc, imagePathEnv, '', 'PNG', imageXEnv, yPos, width, 90);
+    yPos += Math.max(90, height) + 7;
+    // add casquete
+    const aux = dimensionAspectRatio(imagePathCas, pageWidth - 40, 40);
+    const widthCas = aux.width;
+    const heightCas = aux.height;
+    const imageXCas = (pageWidth - widthCas) / 2;
+    yPos = checkPageOverflow(doc, yPos, Math.max(40, heightCas) + 14);
+    doc.text('- Casquete', 50 , yPos);
+    yPos += 7;
+    addImage(doc, imagePathCas, '', 'PNG', imageXCas, yPos, widthCas, 40);
+    yPos += Math.max(40, heightCas) + 7;
+
     yPos = addGrid(doc, scheme, yPos);
     return yPos;
 }
@@ -27,9 +39,6 @@ const addScheme = (doc, imageY, scheme, title) => {
 export { addScheme }
 const addGrid = (doc, scheme, yPos) => {
     //subtitulo
-    doc.text('b. Resultados¹', 40 , yPos);
-    yPos += 7;
-    
     let scheme_temp = scheme;
     addToGridData(scheme_temp);
     const { gridData } = scheme_temp;
@@ -38,6 +47,7 @@ const addGrid = (doc, scheme, yPos) => {
     const lineHeight = 8; // Espaciado entre líneas
     const maxWidth = doc.internal.pageSize.width - xOffset * 2; // Ancho máximo disponible para la tabla
     let yPosGrid = yPos;
+    let flag = true;
     Object.keys(gridData).forEach(title => {
         const data = gridData[title];
         const numRows = data.length;
@@ -53,7 +63,13 @@ const addGrid = (doc, scheme, yPos) => {
             }
             columnWidths.push(maxWidthInColumn);
         }
-        yPosGrid = checkPageOverflow(doc, yPosGrid, 8 * data[0].length);
+        yPosGrid = checkPageOverflow(doc, yPosGrid, 8 * data[0].length + 7);
+        if(flag){
+            doc.text('b. Resultados¹', 40 , yPosGrid);
+            yPosGrid += 7;
+            flag = false;
+        }
+        addMedidasEnMM(doc);
 
         const tableWidth = columnWidths.reduce((total, width) => total + width, 0); // Ancho total de la tabla
         let xPos = (maxWidth - tableWidth) / 2 + xOffset; // Posición X inicial para centrar la tabla
@@ -102,3 +118,23 @@ const addToGridData = (scheme) => {
         });
     });
 };
+
+const addMedidasEnMM = (doc) => {
+    let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+
+    // Definir posición para la línea y el texto del pie de página
+    let lineHeight = 4; // Altura de la línea
+    let footerText = '¹Todas las medidas están en mm';
+    let footerTextSize = 7; // Tamaño de la fuente para el texto del pie de página
+    let footerTextPadding = 25; // Espacio entre la línea y el texto del pie de página
+    let footerTextX = 30; // Posición X del texto del pie de página
+
+    // Dibujar línea justo encima del texto del pie de página
+    doc.setLineWidth(0.07); // Grosor de la línea
+    doc.line(footerTextX, pageHeight - footerTextPadding - lineHeight, 100, pageHeight - footerTextPadding - lineHeight);
+
+    // Agregar texto del pie de página
+    doc.setFontSize(footerTextSize); // Establecer el tamaño de la fuente para el texto del pie de página
+    doc.text(footerText, 50 , pageHeight - footerTextPadding);
+
+}

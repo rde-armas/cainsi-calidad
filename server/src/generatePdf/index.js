@@ -47,7 +47,6 @@ const sections = [
 
 const generatePDF = (data) => { 
     const {dispositivo, cliente, elaborado, photoDivice} = data;
-    console.log(photoDivice[100]);
     const doc = new jsPDF();
     addHeader(doc);
     createCover(doc, dispositivo, cliente, elaborado, photoDivice);
@@ -57,7 +56,6 @@ const generatePDF = (data) => {
     addFooter(doc);
     addContent(doc, data);
     doc.save('a4.pdf')
-    //console.log('asdf')
     return doc.output('bloburl');
 }
 

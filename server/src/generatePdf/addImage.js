@@ -8,7 +8,6 @@ function addImage(document, path, imgBase64, extension, x, y, maxWidth, maxHeigh
     } else {
         image = imgBase64[0];
     }
-    console.log(image[10])
     const { width, height } = dimensionAspectRatio(path, maxWidth, maxHeight, imgBase64[1], imgBase64[2]);
     document.addImage(image, extension, x, y, width, height);
 }
@@ -16,7 +15,6 @@ function addImage(document, path, imgBase64, extension, x, y, maxWidth, maxHeigh
 function dimensionAspectRatio(path, maxWidth, maxHeight, width_=1, height_=1){
     // Calcular la relación de aspecto
     let dimensions = { width: 1, height: 1 };
-    console.log(path);
     if (path !== ''){
         dimensions = imageSize(path);
     } else {
@@ -30,7 +28,6 @@ function dimensionAspectRatio(path, maxWidth, maxHeight, width_=1, height_=1){
         height = maxHeight;
         width = height * aspectRatio;
     }
-    //console.log(width)
     return { width, height };
 }
 
