@@ -13,7 +13,6 @@ const MedicionEspesoresScreen = () => {
 	const { reportInputs } = React.useContext(ReportContext);
 	
 	let initialInputs = reportInputs;
-	//console.log(initialInputs);
 	const [inputs, setInputs] = useState(initialInputs);
 	const [modalVisibleEnvolventes, setModalVisibleEnvoventes] = useState(false);
 	const [modalVisibleCasquetes, setModalVisibleCasquetes] = useState(false);
@@ -30,16 +29,13 @@ const MedicionEspesoresScreen = () => {
 		setScheme((scheme) => (
 			{ ...scheme, idEnvolvente, idCasquete, grid, imageUriEnv, imageUriCas, }
 			));
-		// initialInputs.scheme.id = id;
-		// initialInputs.scheme.grid = grid;
 	};
 
 	const handleCasqueteSet = (id, list, img) => {
-		console.log('lugar de donde se coloca la lista', schemeImg.grid);
 		schemeImg.grid[1].push(list);
 		schemeImg.imageUriCas = img;
 		schemeImg.idCasquete = id;
-		console.log('final', schemeImg.grid);
+		inputs.scheme = schemeImg;
 	}
 	
 	const handleInputChangeGrid = (title, rowIndex, colIndex, text) => {

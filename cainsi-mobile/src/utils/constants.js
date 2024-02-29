@@ -17,7 +17,7 @@ const initialInputs = {
         propositoAlcance: 'Inspección de las superficies accesibles con la finalidad de descartar la existencia de deformaciones y severa corrosión localizada.',
         preparacion: 'Limpieza. Iluminación apropiada.',
         resultado:'Se observaron algunos desprendimientos del recubrimiento de pintura por acciones mecánicas exteriores (golpes y abrasiones)',
-        scheme: {id:'', grid: [], gridData: {}},
+        scheme: {idEnvolvente:'', idCasquete:'', grid: [], gridData: {}},
         conclusion: 'No se detectaron zonas de bajo espesor, los valores medidos en una misma chapa no presentan severas diferencias entre sí.',
     },
     empty:{},
