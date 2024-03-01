@@ -73,8 +73,11 @@ const generatePDF = async (data) => {
     addHeader(doc);
     addFooter(doc);
     addContent(doc, data);
-    doc.save('a4.pdf')
-    return doc.output('bloburl');
+    // Obtener los bytes del PDF en formato ArrayBuffer
+    const pdfArrayBuffer = doc.output('arraybuffer');
+
+    // Devolver los bytes del PDF
+    return new Uint8Array(pdfArrayBuffer);
 }
 
 // Función para agregar contenido
