@@ -11,7 +11,6 @@ const sendJSONToServer = async (jsonData) => {
         });
         
         const contentType = response.headers.get('content-type');
-        console.log(contentType)
         if (contentType && contentType.startsWith('application/pdf')) {
             // Leer el contenido del PDF como un blob
             const pdfBlob = await response.blob();

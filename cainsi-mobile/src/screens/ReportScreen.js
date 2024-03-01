@@ -4,7 +4,8 @@ import { ReportContextApp } from '../components/context/AppContext';
 import { MedicionEspesoresScreen } from './reports/MedicionEspesoresScreen'; 
 import Empty from './reports/Empty';
 
-export default function ReportScreen() {
+export default function ReportScreen(props) {
+    const { navigation } = props;
     const { report } = React.useContext(ReportContextApp);
 
     const showAlert = () => {
@@ -20,7 +21,7 @@ export default function ReportScreen() {
         switch (report) {
             case "medicionEspesores":
                 console.log(report);
-                return <MedicionEspesoresScreen />;
+                return <MedicionEspesoresScreen navigation={ navigation }/>;
             case "empty":
                 return <Empty/>;
             default:

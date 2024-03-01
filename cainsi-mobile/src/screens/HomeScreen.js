@@ -5,12 +5,10 @@ import { ReportContext } from '../components/context/ReportContext';
 
 export default function HomeScreen(props) {
   	const { navigation } = props;
-
 	const { setReportUse, report } = React.useContext(ReportContextApp);
 	const { resetReportValues, setReportValues, reportInputs } = React.useContext(ReportContext);
 
 	const goToReport = (reportName) => {
-		console.log(reportName, report);
 		if (report != null && report !== reportName) {
 			Alert.alert(
 				"Advertencia",

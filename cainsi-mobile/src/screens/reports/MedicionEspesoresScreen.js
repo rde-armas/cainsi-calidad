@@ -9,9 +9,8 @@ import { saveJSONToDevice } from '../../utils/saveJSONToDevice';
 import { ReportContext } from '../../components/context/ReportContext';
 import { envolventes, casquetes } from '../../utils/constants';
 
-const MedicionEspesoresScreen = () => {
-	const { reportInputs } = React.useContext(ReportContext);
-	
+const MedicionEspesoresScreen = ({ navigation }) => {
+	const { reportInputs, resetReportValues } = React.useContext(ReportContext);
 	let initialInputs = reportInputs;
 	const [inputs, setInputs] = useState(initialInputs);
 	const [modalVisibleEnvolventes, setModalVisibleEnvoventes] = useState(false);
@@ -57,7 +56,6 @@ const MedicionEspesoresScreen = () => {
 				// Actualizar el valor en la matriz correspondiente al título y coordenadas dadas
 				newInputs.scheme.gridData[title][rowIndex][colIndex] = text;
 			}
-			console.log(newInputs.scheme);
 			return newInputs;
 		});
 	};
@@ -89,15 +87,23 @@ const MedicionEspesoresScreen = () => {
 		return [false, null];
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		const key = isObjectEmpty(inputs)[1];
 		if (isObjectEmpty(inputs)[0]) {
 		  alert(`Por favor complete el campo "${key}" antes de generar el PDF.`);
 		  return;
 		}
-		console.log(inputs.scheme.gridData);
 		saveJSONToDevice(inputs);
-		sendJSONToServer(inputs);
+		
+		try {
+			const fileUri = await sendJSONToServer(inputs);
+			alert('Reporte enviado correctamente');
+			resetReportValues('medicionEspesores');
+			navigation.navigate("Home");
+		} catch (error) {
+			alert('Error al enviar el reporte');
+			console.error(error);
+		}
 	};
 	
 	const windowWidth = Dimensions.get('window').width;
