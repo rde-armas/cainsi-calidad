@@ -17,6 +17,7 @@ export default function Camara({inputName, onInputChange}) {
 
 		if (!result.canceled) {
 			//saveImage(result.assets[0]);
+			setSelectedImage(result.assets[0]);
 			onInputChange(inputName, [result.assets[0].base64, result.assets[0].width, result.assets[0].height]);
 		}
 	};
@@ -31,7 +32,8 @@ export default function Camara({inputName, onInputChange}) {
 		});
 
 		if (!result.canceled) {
-			//saveImage(result.assets[0]);
+			//saveImage();
+			setSelectedImage(result.assets[0]);
 			onInputChange(inputName, [result.assets[0].base64, result.assets[0].width, result.assets[0].height]);
 		}
 	};
@@ -54,7 +56,7 @@ export default function Camara({inputName, onInputChange}) {
 				});
 			}
 
-			setSelectedImage(image);
+			//setSelectedImage(image);
 			console.log('Imagen guardada en:', selectedImage.uri);
 		} catch (error) {
 			console.error('Error al guardar la imagen:', error);
@@ -68,7 +70,7 @@ export default function Camara({inputName, onInputChange}) {
 	// Dentro de tu componente
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-			{selectedImage && selectedImage.uri && (
+			{selectedImage && (
 				<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
 					<Image
 						source={{ uri: `data:image/jpeg;base64,${selectedImage.base64}`}}

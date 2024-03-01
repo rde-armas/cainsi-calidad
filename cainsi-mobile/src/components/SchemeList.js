@@ -3,7 +3,6 @@ import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity } from 'react
 export default function SchemeListEnvolvente({ onSelectImage, images }) {
 
     const handleImagePress = (id, grid, image) => {
-        console.log('imagenes', id, grid, image);
         onSelectImage(id, grid, image);
     };
 

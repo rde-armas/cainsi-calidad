@@ -14,25 +14,25 @@ export default function Navigation() {
             <Tab.Screen name='Home' component={HomeScreen} options={{
                 tabBarLabel: "Home",
                 tabBarIcon: ({ color, size }) => <Icon name="home" color={color} size={size} />,
-                headerShown: false,
+                headerShown: true,
             }} />
 
             <Tab.Screen name='Report' component={ReportScreen} options={{
                 tabBarLabel: "Reporte",
                 tabBarIcon: ({ color, size }) => <Icon name="document" color={color} size={size} />,
-                headerShown: false,
+                headerShown: true,
             }}/>
 
             <Tab.Screen name='ReportsQueue' component={ReportsQueueNavigation} options={{
                 tabBarLabel: "Cola de Reportes",
                 tabBarIcon: ({ color, size }) => <Icon name="albums" color={color} size={size} />,
-                headerShown: false,
+                headerShown: true,
             }} />
 
             <Tab.Screen name='Settings' component={SettingsScreen} options={{
                 tabBarLabel: "Settings",
                 tabBarIcon: ({ color, size }) => <Icon name="settings" color={color} size={size} />,
-                headerShown: false,
+                headerShown: true,
             }}/>
         </Tab.Navigator>
     )

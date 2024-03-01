@@ -65,7 +65,6 @@ jsPDF.API.events.push(['addFonts', callAddFont])
 const generatePDF = async (data) => { 
     const {dispositivo, cliente, elaborado, photoDivice} = data;
     const doc = new jsPDF();
-    console.log(doc.getFontList())
     doc.setFont('OpenSans-Regular', 'normal');
     addHeader(doc);
     createCover(doc, dispositivo, cliente, elaborado, photoDivice);
