@@ -1,6 +1,11 @@
 import { jsPDF } from 'jspdf';
 import { addHeader, addFooter, createCover } from './firstPage.js';
 import { addScheme } from './addScheme.js';
+import { OpenSansSemiBold } from '../utils/OpenSans-SemiBold-normal.js'
+import { OpenSansBold } from '../utils/OpenSans-Bold-normal.js'
+import { OpenSansRegular } from '../utils/OpenSans-Regular-normal.js'
+
+const FONT_SIZE_SECCTION = 14;
 
 const sections = [
     {
@@ -45,9 +50,23 @@ const sections = [
     }
 ];
 
-const generatePDF = (data) => { 
+// load fonts
+var callAddFont = function () {
+    this.addFileToVFS('OpenSans-Regular-normal.ttf', OpenSansRegular);
+    this.addFont('OpenSans-Regular-normal.ttf', 'OpenSans-Regular', 'normal');
+    this.addFileToVFS('OpenSans-Bold-normal.ttf', OpenSansBold);
+    this.addFont('OpenSans-Bold-normal.ttf', 'OpenSans-Bold', 'normal');
+    this.addFileToVFS('OpenSans-SemiBold-normal.ttf', OpenSansSemiBold);
+    this.addFont('OpenSans-SemiBold-normal.ttf', 'OpenSans-SemiBold', 'normal');
+};
+
+jsPDF.API.events.push(['addFonts', callAddFont])
+
+const generatePDF = async (data) => { 
     const {dispositivo, cliente, elaborado, photoDivice} = data;
     const doc = new jsPDF();
+    console.log(doc.getFontList())
+    doc.setFont('OpenSans-Regular', 'normal');
     addHeader(doc);
     createCover(doc, dispositivo, cliente, elaborado, photoDivice);
     addFooter(doc);
@@ -76,6 +95,7 @@ const addContent = (doc, data) => {
             titleLines = doc.splitTextToSize(section.title, maxWidth);
             
             // content
+            doc.setFont('OpenSans-Regular', 'normal');
             contentLines = doc.splitTextToSize(`- Resolución: ${resolucion} mm\n- Rango de medida: ${minRange} a ${maxRange}mm\n- Scan basado en tiempo A/B y compuerta\n- Palpador: ${palpador}, diámetro ${diametro}mm`, maxWidth);
             yPos = checkPageOverflow(doc, yPos, contentLines.length * 7 + titleLines.length * 6);
         } else if (section.content === 'scheme') {
@@ -84,8 +104,9 @@ const addContent = (doc, data) => {
             return;
         }  else if(section.content === 'ensayo'){
             titleLines = doc.splitTextToSize(section.title, maxWidth);
-            doc.setFont('Helvetica', 'normal');
-            doc.setFontSize(14);
+            doc.setFont('OpenSans-Bold', 'normal');
+            doc.setFontSize(FONT_SIZE_SECCTION);
+            
             doc.text(xposTitle , yPos, titleLines);
             yPos += titleLines.length * 7;
             return;
@@ -93,7 +114,7 @@ const addContent = (doc, data) => {
             //Title
             titleLines = doc.splitTextToSize(section.title, maxWidth);
             xposTitle = 40;
-
+            
             // content
             contentLines = doc.splitTextToSize(data[section.content], maxWidth, maxWidth);
             yPos = checkPageOverflow(doc, yPos, (contentLines.length + titleLines.length) * 6);
@@ -102,20 +123,24 @@ const addContent = (doc, data) => {
         else if (section.content !== '' ) {
             //Title
             titleLines = doc.splitTextToSize(section.title, maxWidth);
-
+            
             // content
             contentLines = doc.splitTextToSize(data[section.content], maxWidth, maxWidth);
             yPos = checkPageOverflow(doc, yPos, contentLines.length * 7 + titleLines.length * 6);
         } 
         
         //title
-        doc.setFont('Helvetica', 'normal');
-        doc.setFontSize(14);
+        if(isNaN(parseInt(section.title[0]))) {
+            doc.setFont('OpenSans-SemiBold', 'normal');
+        } else {
+            doc.setFont('OpenSans-Bold', 'normal');
+        }
+        doc.setFontSize(FONT_SIZE_SECCTION);
         doc.text(xposTitle , yPos, titleLines);
         yPos += titleLines.length * 7;
         
         //content
-        doc.setFont('Helvetica', 'normal');
+        doc.setFont('OpenSans-Regular', 'normal');
         doc.setFontSize(11);
         doc.text(xposContent, yPos, contentLines);
         yPos += contentLines.length * 7;

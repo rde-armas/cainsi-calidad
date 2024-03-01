@@ -12,11 +12,14 @@ const addScheme = (doc, imageY, scheme, title) => {
     let yPos = checkPageOverflow(doc, imageY, Math.max(90, height) + 14);
     
     // title
+    doc.setFont('OpenSans-Bold', 'normal');
     doc.setFontSize(14);
     doc.text(title, 30 , yPos);
+    doc.setFont('OpenSans-SemiBold', 'normal');
     yPos += 7;
     doc.text('a. Esquema de medición', 40 , yPos);
     yPos += 7;
+    doc.setFont('OpenSans-Regular', 'normal');
     doc.text('- Envolventes', 50 , yPos);
     yPos += 7;
     addImage(doc, imagePathEnv, '', 'PNG', imageXEnv, yPos, width, 90);
@@ -65,18 +68,21 @@ const addGrid = (doc, scheme, yPos) => {
         }
         yPosGrid = checkPageOverflow(doc, yPosGrid, 8 * data[0].length + 7);
         if(flag){
+            doc.setFont('OpenSans-SemiBold', 'normal');
+            doc.setFontSize(14);
             doc.text('b. Resultados¹', 40 , yPosGrid);
             yPosGrid += 7;
             flag = false;
+            addMedidasEnMM(doc);
         }
-        addMedidasEnMM(doc);
 
         const tableWidth = columnWidths.reduce((total, width) => total + width, 0); // Ancho total de la tabla
         let xPos = (maxWidth - tableWidth) / 2 + xOffset; // Posición X inicial para centrar la tabla
 
         // Agregar título de la tabla
-        doc.setFontSize(fontSize + 2);
-        doc.text(title, 50, yPosGrid);
+        doc.setFont('OpenSans-Regular', 'normal');
+        doc.setFontSize(fontSize);
+        doc.text(`- ${title}`, 50, yPosGrid);
         const fillColor = "#aca899";
         doc.setFillColor(fillColor);
         doc.rect(50, 15, 100, 1.2, 'F')
@@ -84,6 +90,7 @@ const addGrid = (doc, scheme, yPos) => {
 
         // Dibujar celdas y agregar datos
         doc.setFontSize(fontSize);
+        doc.setFont('OpenSans-Regular', 'normal');
         for (let i = 0; i < numRows; i++) {
             for (let j = 0; j < data[i].length; j++) {
                 const cellData = data[i][j];

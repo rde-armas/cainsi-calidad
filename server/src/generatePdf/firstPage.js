@@ -30,7 +30,7 @@ function createCover(pdf, deviceName, client, madeBy, photoDivice ) {
 
     // Configurar estilo para fecha
     pdf.setFontSize(12);
-    pdf.setFont('Helvetica', 'normal');
+    pdf.setFont('OpenSans-Regular', 'normal');
 
     // Dibujar la fecha
     const dateX = pageWidth - pdf.getTextDimensions(`Montevideo, ${formattedDate}`).w - 35
@@ -42,7 +42,7 @@ function createCover(pdf, deviceName, client, madeBy, photoDivice ) {
 
     // Configurar estilo para título
     pdf.setFontSize(16);
-    pdf.setFont('Helvetica');
+    pdf.setFont('OpenSans-SemiBold', 'normal');
 
     // Dibujar el título
     const title = "Informe Técnico de Medición de Espesores en\nRecipientes de Presión";
@@ -58,6 +58,7 @@ function createCover(pdf, deviceName, client, madeBy, photoDivice ) {
     pdf.line(35, titleBottomLineY, pageWidth - 35, titleBottomLineY);
 
     // Name device
+    pdf.setFont('OpenSans-Regular', 'normal');
     pdf.text(deviceName, pageWidth / 2, titleBottomLineY + 15, { align: 'center' });
 
     // Añadir imagen al centro
