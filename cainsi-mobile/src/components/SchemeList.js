@@ -1,4 +1,4 @@
-import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function SchemeListEnvolvente({ onSelectImage, images }) {
 

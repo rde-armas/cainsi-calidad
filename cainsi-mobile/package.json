@@ -14,8 +14,11 @@
     "@react-navigation/native-stack": "^6.9.17",
     "expo": "~49.0.15",
     "expo-file-system": "~15.4.5",
+    "expo-image-manipulator": "~11.3.0",
     "expo-image-picker": "~14.3.2",
     "expo-status-bar": "~1.6.0",
+    "jspdf": "^2.5.1",
+    "pdf-lib": "^1.17.1",
     "react": "18.2.0",
     "react-native": "0.72.10",
     "react-native-blob-util": "^0.19.6",
@@ -25,7 +28,8 @@
     "react-native-vector-icons": "^10.0.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@types/jspdf": "^2.0.0"
   },
   "private": true
 }

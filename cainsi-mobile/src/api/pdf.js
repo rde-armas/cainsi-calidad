@@ -2,7 +2,7 @@ import * as FileSystem from 'expo-file-system';
 
 const sendJSONToServer = async (jsonData) => {
     try {
-        const response = await fetch('http://192.168.1.6:3000/receive-json', {
+        const response = await fetch('https://eltpjtzpzk.execute-api.sa-east-1.amazonaws.com/dev/receive-json', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,6 +45,7 @@ const sendJSONToServer = async (jsonData) => {
             
         } else {
             // Si la respuesta no es un PDF, lanzar un error
+            console.log(response)
             throw new Error('La respuesta no es un PDF');
         }
     } catch (error) {
