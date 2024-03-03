@@ -96,7 +96,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 		saveJSONToDevice(inputs);
 		
 		try {
-			const fileUri = await sendJSONToServer(inputs);
+			await sendJSONToServer(inputs);
 			alert('Reporte enviado correctamente');
 			resetReportValues('medicionEspesores');
 			navigation.navigate("Home");
@@ -240,7 +240,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						</View>
 					</>)
 				}
-				<TextMultiLineInputComponent inputName='onclusion' label='Conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='conclusion' label='Conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
 				<View style={{ margin: 20 }}>
  					<Button title="Crear PDF" onPress={handleSubmit} />
 				</View>

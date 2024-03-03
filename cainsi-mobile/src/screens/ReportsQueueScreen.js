@@ -41,25 +41,10 @@ const ReportsQueueScreen = () => {
         setSelectedPdf(pdfName);
     };
 
-    const handleClosePdfViewer = () => {
-        setSelectedPdf(null);
-    };
-
     const handleRefresh = () => {
         setRefreshing(true);
         loadPdfAndJsonList();
         setRefreshing(false);
-    };
-
-    const openPdfViewer = async (pdfName) => {
-        const pdfUri = `${FileSystem.documentDirectory}${pdfName}`;
-        const supported = await Linking.canOpenURL(`file://${pdfUri}`);
-        if (supported) {
-            await Linking.openURL(`file://${pdfUri}`);
-        } else {
-            console.log(`No se puede abrir el archivo: ${pdfName}`);
-            // Aquí podrías mostrar un mensaje al usuario informando que no se puede abrir el archivo
-        }
     };
 
     const renderPdfItem = ({ item }) => (
@@ -70,14 +55,11 @@ const ReportsQueueScreen = () => {
             <TouchableOpacity onPress={() => handleSharePdf(item)} style={styles.shareButton}>
                 <Text style={styles.shareButtonText}>Compartir</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => openPdfViewer(item)} style={styles.viewButton}>
-                <Text style={styles.viewButtonText}>Ver</Text>
-            </TouchableOpacity>
         </View>
     );
 
     const renderJsonItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handleJsonPress(item)} style={styles.itemContainer}>
+        <TouchableOpacity style={styles.itemContainer}>
             <Text>{item}</Text>
         </TouchableOpacity>
     );
@@ -112,12 +94,6 @@ const ReportsQueueScreen = () => {
                     }
                 />
             </View>
-            {selectedPdf && (
-                <PdfViewerScreen
-                    pdfPath={`${FileSystem.documentDirectory}${selectedPdf}`}
-                    onClose={handleClosePdfViewer}
-                />
-            )}
         </View>
     );
 };

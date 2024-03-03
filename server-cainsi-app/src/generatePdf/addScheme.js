@@ -61,7 +61,7 @@ const addGrid = (doc, scheme, yPos) => {
             let maxWidthInColumn = 0;
             for (let i = 0; i < numRows; i++) {
                 const cellData = data[i][j];
-                const cellWidth = doc.getStringUnitWidth(cellData.toString()) * fontSize; // Ancho del texto en la celda
+                const cellWidth = doc.getStringUnitWidth(cellData.toString()) * 6; // Ancho del texto en la celda
                 maxWidthInColumn = Math.max(maxWidthInColumn, cellWidth);
             }
             columnWidths.push(maxWidthInColumn);
