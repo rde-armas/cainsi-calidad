@@ -2,52 +2,44 @@ import * as FileSystem from 'expo-file-system';
 
 const sendJSONToServer = async (jsonData) => {
     try {
-        const response = await fetch('https://eltpjtzpzk.execute-api.sa-east-1.amazonaws.com/dev/receive-json', {
+        fetch('https://eltpjtzpzk.execute-api.sa-east-1.amazonaws.com/dev/cainsi-pdf', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(jsonData),
+        })
+        .then(response =>  {
+            console.log('Response:', response.status, response.statusText);
+            return response })
+        .then(blob => {
+            console.log('Blob:', blob);
+            // const reader = new FileReader();
+            // reader.readAsDataURL(blob); // Leer el Blob como una URL de datos
+            // reader.onload =  () => {
+            //     const dataUrl = reader.result;
+            //     console.log('data url', dataUrl);
+            //     const base64Content = dataUrl.split(',')[1]; // Extraer el contenido codificado en Base64
+            //     console.log('PDF en Base64:', base64Content);
+            //     const pdfUri = FileSystem.documentDirectory + 'documento.pdf'; // Ruta del archivo en el dispositivo
+
+            //     try {
+            //         // Guardar el contenido codificado en Base64 en el sistema de archivos del dispositivo
+            //         FileSystem.writeAsStringAsync(pdfUri, base64Content, { encoding: FileSystem.EncodingType.Base64 });
+
+            //         console.log('PDF guardado en el dispositivo:', pdfUri);
+            //     } catch (error) {
+            //         console.error('Error al guardar el PDF en el dispositivo:', error);
+            //     }
+            // };
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            throw error;
         });
-        
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.startsWith('application/pdf')) {
-            // Leer el contenido del PDF como un blob
-            const pdfBlob = await response.blob();
-            
-            // Convertir el blob a una cadena base64
-            const reader = new FileReader();
-            reader.readAsDataURL(pdfBlob);
-            
-            let base64Data = '';
-            reader.onloadend = () => {
-                base64Data = reader.result.split(',')[1]; // Elimina el prefijo data URL
-            };
-            
-            // Esperar a que se lea el blob y se convierta en una cadena base64
-            await new Promise((resolve) => {
-                reader.onloadend = () => {
-                    resolve();
-                };
-            });
-            
-            // Generar un nombre de archivo único para el PDF
-            const fileName = `${jsonData.dispositivo}${Date.now()}.pdf`;
 
-            // Guardar el PDF en la memoria del dispositivo
-            const fileUri = `${FileSystem.documentDirectory}${fileName}`;
-            await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
 
-            console.log('PDF guardado correctamente en:', fileUri);
-            return fileUri; // Devolver la ruta del archivo guardado
-            
-        } else {
-            // Si la respuesta no es un PDF, lanzar un error
-            console.log(response)
-            throw new Error('La respuesta no es un PDF');
-        }
     } catch (error) {
         console.error('Error:', error);
         throw error;

@@ -22,7 +22,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.rde_armas.cainsimobile"
+      "package": "com.rde_armas.cainsimobile",
+      "publishing": {
+        "releaseChannel": "default",
+        "artifactType": "apk"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

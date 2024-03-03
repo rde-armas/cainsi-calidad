@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Share } from 'react-native';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl, Linking } from 'react-native';
 import * as FileSystem from 'expo-file-system';
-import { openPdf } from '../utils/openPdf'; // Función para abrir PDFs
+import * as Sharing from 'expo-sharing'; // Importar desde expo-sharing en lugar de react-native
 
 const ReportsQueueScreen = () => {
     const [pdfList, setPdfList] = useState([]);
     const [jsonList, setJsonList] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedPdf, setSelectedPdf] = useState(null);
 
     useEffect(() => {
         loadPdfAndJsonList();
@@ -25,37 +25,24 @@ const ReportsQueueScreen = () => {
             console.error('Error cargando lista de archivos:', error);
         }
     };
-
-    const handleSharePdf = async (pdfUri) => {
+    
+    const handleSharePdf = async (pdfName) => {
         try {
-            const result = await Share.share({
-                url: pdfUri,
-            });
-            
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    // Se compartió a través de una actividad específica
-                    console.log(`Compartido a través de ${result.activityType}`);
-                } else {
-                    // Se compartió
-                    console.log('PDF compartido');
-                }
-            } else if (result.action === Share.dismissedAction) {
-                // Se canceló el cuadro de diálogo
-                console.log('Compartir cancelado');
-            }
+            const pdfUri = `${FileSystem.documentDirectory}${pdfName}`;
+            // Utilizar expo-sharing en lugar de Share de react-native
+            await Sharing.shareAsync(`file://${pdfUri}`);
+            console.log('PDF compartido');
         } catch (error) {
             console.error('Error al compartir PDF:', error.message);
         }
     };
 
-    const handlePdfPress = async (pdfName) => {
-        const pdfUri = `${FileSystem.documentDirectory}${pdfName}`;
-        openPdf(pdfUri);
+    const handlePdfPress = (pdfName) => {
+        setSelectedPdf(pdfName);
     };
 
-    const handleJsonPress = async (jsonName) => {
-        // Aquí puedes manejar la acción de abrir el archivo JSON
+    const handleClosePdfViewer = () => {
+        setSelectedPdf(null);
     };
 
     const handleRefresh = () => {
@@ -64,13 +51,27 @@ const ReportsQueueScreen = () => {
         setRefreshing(false);
     };
 
+    const openPdfViewer = async (pdfName) => {
+        const pdfUri = `${FileSystem.documentDirectory}${pdfName}`;
+        const supported = await Linking.canOpenURL(`file://${pdfUri}`);
+        if (supported) {
+            await Linking.openURL(`file://${pdfUri}`);
+        } else {
+            console.log(`No se puede abrir el archivo: ${pdfName}`);
+            // Aquí podrías mostrar un mensaje al usuario informando que no se puede abrir el archivo
+        }
+    };
+
     const renderPdfItem = ({ item }) => (
         <View style={styles.itemContainer}>
             <TouchableOpacity onPress={() => handlePdfPress(item)} style={styles.item}>
                 <Text numberOfLines={1} ellipsizeMode="tail">{item}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSharePdf(`${FileSystem.documentDirectory}${item}`)} style={styles.shareButton}>
+            <TouchableOpacity onPress={() => handleSharePdf(item)} style={styles.shareButton}>
                 <Text style={styles.shareButtonText}>Compartir</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => openPdfViewer(item)} style={styles.viewButton}>
+                <Text style={styles.viewButtonText}>Ver</Text>
             </TouchableOpacity>
         </View>
     );
@@ -111,6 +112,12 @@ const ReportsQueueScreen = () => {
                     }
                 />
             </View>
+            {selectedPdf && (
+                <PdfViewerScreen
+                    pdfPath={`${FileSystem.documentDirectory}${selectedPdf}`}
+                    onClose={handleClosePdfViewer}
+                />
+            )}
         </View>
     );
 };
@@ -144,11 +151,19 @@ const styles = StyleSheet.create({
         backgroundColor: 'lightblue',
         padding: 5,
         borderRadius: 5,
+        marginRight: 10,
     },
     shareButtonText: {
         fontWeight: 'bold',
     },
+    viewButton: {
+        backgroundColor: 'lightgreen',
+        padding: 5,
+        borderRadius: 5,
+    },
+    viewButtonText: {
+        fontWeight: 'bold',
+    },
 });
-
 
 export default ReportsQueueScreen;
