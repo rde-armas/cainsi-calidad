@@ -5,15 +5,62 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: sa-east-1
-  iamRoleStatements:
-    - Effect: Allow
-      Action: lambda:InvokeFunction
-      Resource: "*"
+  stage: dev
 
 functions:
   serverApp:
     handler: src/api/server.serverApp
     events:
       - http:
-          method: POST
-          path: /receive-json
+          path: /cainsi-pdf 
+          method: post   # Adjust method as needed
+
+resources:
+  Resources:
+    MyLambdaExecutionRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - "sts:AssumeRole"
+        Path: "/"
+        Policies:
+          - PolicyName: MyLambdaExecutionPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "cloudfront:GetDistribution"
+                    - "cloudfront:ListDistributions"
+                  Resource: "*"
+
+  Outputs:
+    MyLambdaExecutionRoleArn:
+      Value: !GetAtt MyLambdaExecutionRole.Arn
+
+# service: server-cainsi-app
+# frameworkVersion: '3'
+
+# provider:
+#   name: aws
+#   runtime: nodejs20.x
+#   region: sa-east-1
+#   iamRoleStatements:
+#     - Effect: Allow
+#       Action: lambda:InvokeFunction
+#       Resource: "*"
+
+# functions:
+#   serverApp:
+#     handler: src/api/server.serverApp
+#     events:
+#       - http:
+#           method: POST
+#           path: /receive-json

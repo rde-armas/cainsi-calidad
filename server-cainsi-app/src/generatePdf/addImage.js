@@ -9,7 +9,7 @@ function addImage(document, path, imgBase64, extension, x, y, maxWidth, maxHeigh
         image = imgBase64[0];
     }
     const { width, height } = dimensionAspectRatio(path, maxWidth, maxHeight, imgBase64[1], imgBase64[2]);
-    document.addImage(image, extension, x, y, width, height, compression='FAST');
+    document.addImage(image, extension, x, y, width, height);
 }
 
 function dimensionAspectRatio(path, maxWidth, maxHeight, width_=1, height_=1){

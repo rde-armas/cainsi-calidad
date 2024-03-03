@@ -64,7 +64,7 @@ jsPDF.API.events.push(['addFonts', callAddFont])
 
 const generatePDF = async (data) => { 
     const {dispositivo, cliente, elaborado, photoDivice} = data;
-    const doc = new jsPDF(compressPdf=true);
+    const doc = new jsPDF();
     doc.setFont('OpenSans-Regular', 'normal');
     addHeader(doc);
     createCover(doc, dispositivo, cliente, elaborado, photoDivice);
@@ -73,12 +73,9 @@ const generatePDF = async (data) => {
     addHeader(doc);
     addFooter(doc);
     addContent(doc, data);
-    // Obtener los bytes del PDF en formato ArrayBuffer
-    const pdfArrayBuffer = doc.output('arraybuffer');
-
-    // Devolver los bytes del PDF
-    return new Uint8Array(pdfArrayBuffer);
-}
+    const arrayBuffer = doc.output('arraybuffer');
+    return arrayBuffer;
+};
 
 // Función para agregar contenido
 const addContent = (doc, data) => {

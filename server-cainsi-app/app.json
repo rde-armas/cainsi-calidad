@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "3100a2de-f1e1-402d-ba6f-4299193932d1"
+      }
+    },
+    "android": {
+      "package": "com.rde_armas.server"
+    }
+  }
+}
