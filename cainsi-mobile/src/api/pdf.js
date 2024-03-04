@@ -21,7 +21,14 @@ const sendJSONToServer = async (jsonData) => {
             reader.readAsDataURL(blob); // Leer el Blob como una URL de datos
             reader.onload =  () => {
                 const base64Data = reader.result.split(",")[1]; // Extraer la parte de la cadena que contiene la base64 pura
-                const fileName = `${jsonData.dispositivo}${Date.now()}.pdf`;
+                const currentDate = new Date.now();
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth() + 1;
+                const day = currentDate.getDate();
+                const hour = currentDate.getHours();
+                const minutes = currentDate.getMinutes();
+                const seconds = currentDate.getSeconds();
+                const fileName = `${jsonData.dispositivo}${year}-${month}-${day}-${hour}${seconds}${minutes}.pdf`;
                 saveBlobAsPDF(base64Data, fileName);
             };
         })

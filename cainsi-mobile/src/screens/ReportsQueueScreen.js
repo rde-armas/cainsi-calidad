@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl, Linking } from 'react-native';
 import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing'; // Importar desde expo-sharing en lugar de react-native
+import * as Sharing from 'expo-sharing';
+import Icon from "react-native-vector-icons/Ionicons";
 
 const ReportsQueueScreen = () => {
     const [pdfList, setPdfList] = useState([]);
     const [jsonList, setJsonList] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-    const [selectedPdf, setSelectedPdf] = useState(null);
+    const [selectedPdf, setSelectedPdf] = useState([]);
 
     useEffect(() => {
         loadPdfAndJsonList();
@@ -17,8 +18,8 @@ const ReportsQueueScreen = () => {
         try {
             const directory = FileSystem.documentDirectory;
             const files = await FileSystem.readDirectoryAsync(directory);
-            const pdfFiles = files.filter(file => file.endsWith('.pdf'));
-            const jsonFiles = files.filter(file => file.endsWith('.json'));
+            const pdfFiles = files.filter(file => file.endsWith('.pdf')).reverse();
+            const jsonFiles = files.filter(file => file.endsWith('.json')).reverse();
             setPdfList(pdfFiles);
             setJsonList(jsonFiles);
         } catch (error) {
@@ -37,37 +38,90 @@ const ReportsQueueScreen = () => {
         }
     };
 
-    const handlePdfPress = (pdfName) => {
-        setSelectedPdf(pdfName);
+    const handlePdfPress = (item) => {
+        // Verificar si el elemento ya está seleccionado
+        const selectedIndex = selectedPdf.indexOf(item);
+        if (selectedIndex === -1) {
+            // Si no está seleccionado, agregarlo al array de elementos seleccionados
+            setSelectedPdf([...selectedPdf, item]);
+        } else {
+            // Si ya está seleccionado, eliminarlo del array de elementos seleccionados
+            const updatedItems = [...selectedPdf];
+            updatedItems.splice(selectedIndex, 1);
+            setSelectedPdf(updatedItems);
+        }
     };
 
+    const loadPayload = async (jsonName) => {
+        try {
+            const jsonUri = `${FileSystem.documentDirectory}${jsonName}`;
+            const jsonContent = await FileSystem.readAsStringAsync(jsonUri);
+            const jsonData = JSON.parse(jsonContent);
+            console.log('Datos cargados:', jsonData);
+        } catch (error) {
+            console.error('Error cargando datos:', error);
+        }
+    };
+    
     const handleRefresh = () => {
         setRefreshing(true);
         loadPdfAndJsonList();
         setRefreshing(false);
     };
 
-    const renderPdfItem = ({ item }) => (
-        <View style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => handlePdfPress(item)} style={styles.item}>
-                <Text numberOfLines={1} ellipsizeMode="tail">{item}</Text>
+    const removeFiles = async () => {
+        try {
+            const directory = FileSystem.documentDirectory;
+            // Iterar sobre cada nombre de archivo seleccionado y eliminarlo
+            await Promise.all(selectedPdf.map(async (fileName) => {
+                await FileSystem.deleteAsync(directory + fileName);
+            }));
+            // Limpiar la lista de archivos seleccionados
+            setSelectedPdf([]);
+            // Recargar la lista de PDF y JSON
+            loadPdfAndJsonList();
+        } catch (error) {
+            console.error('Error eliminando archivos:', error);
+        }
+    };
+
+    const renderPdfItem = ({ item }) =>  {
+        const isSelected = selectedPdf.includes(item);
+        const itemStyle = [styles.itemContainer, isSelected && styles.selectedItem];
+
+        return (
+            <TouchableOpacity onPress={() => handlePdfPress(item)} style={itemStyle}>
+                <TouchableOpacity onPress={() => handlePdfPress(item)} style={styles.item}>
+                    <Text numberOfLines={1} ellipsizeMode="tail">{item}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => removeFiles(item)} style={styles.shareButton}>
+                    <Icon name='trash-outline'/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleSharePdf(item)} style={styles.shareButton}>
+                    <Icon name='share-social'/>
+                </TouchableOpacity>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSharePdf(item)} style={styles.shareButton}>
-                <Text style={styles.shareButtonText}>Compartir</Text>
-            </TouchableOpacity>
-        </View>
-    );
+        );
+    }
 
     const renderJsonItem = ({ item }) => (
         <TouchableOpacity style={styles.itemContainer}>
-            <Text>{item}</Text>
+            <TouchableOpacity style={styles.item}>
+                <Text numberOfLines={1} ellipsizeMode="tail">{item}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => removeFiles(item)} style={styles.shareButton}>
+                    <Icon name='trash-outline'/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleSharePdf(item)} style={styles.shareButton}>
+                <Text onPress={() => loadPayload(item)} style={styles.shareButtonText}>Cargar datos</Text>
+            </TouchableOpacity>
         </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Historial de PDFs:</Text>
+                <Text style={styles.sectionTitle}>Historial de PDFs</Text>
                 <FlatList
                     data={pdfList}
                     renderItem={renderPdfItem}
@@ -81,7 +135,7 @@ const ReportsQueueScreen = () => {
                 />
             </View>
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Historial de JSONs:</Text>
+                <Text style={styles.sectionTitle}>Historial de JSONs</Text>
                 <FlatList
                     data={jsonList}
                     renderItem={renderJsonItem}
@@ -119,25 +173,24 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         padding: 10,
         marginBottom: 10,
+        borderRadius:8,
+        paddingLeft:20,
     },
     item: {
         flex: 1,
     },
+    selectedItem: {
+        backgroundColor: '#e7e7e7',
+        marginLeft:5,
+        marginRight:5,
+    },
     shareButton: {
         backgroundColor: 'lightblue',
-        padding: 5,
+        padding: 10,
         borderRadius: 5,
         marginRight: 10,
     },
     shareButtonText: {
-        fontWeight: 'bold',
-    },
-    viewButton: {
-        backgroundColor: 'lightgreen',
-        padding: 5,
-        borderRadius: 5,
-    },
-    viewButtonText: {
         fontWeight: 'bold',
     },
 });
