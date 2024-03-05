@@ -8,7 +8,7 @@ const ReportsQueueScreen = () => {
     const [pdfList, setPdfList] = useState([]);
     const [jsonList, setJsonList] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-    const [selectedPdf, setSelectedPdf] = useState([]);
+    const [selectedItem, setselectedItem] = useState([]);
 
     useEffect(() => {
         loadPdfAndJsonList();
@@ -38,17 +38,17 @@ const ReportsQueueScreen = () => {
         }
     };
 
-    const handlePdfPress = (item) => {
+    const handleItemPress = (item) => {
         // Verificar si el elemento ya está seleccionado
-        const selectedIndex = selectedPdf.indexOf(item);
+        const selectedIndex = selectedItem.indexOf(item);
         if (selectedIndex === -1) {
             // Si no está seleccionado, agregarlo al array de elementos seleccionados
-            setSelectedPdf([...selectedPdf, item]);
+            setselectedItem([...selectedItem, item]);
         } else {
             // Si ya está seleccionado, eliminarlo del array de elementos seleccionados
-            const updatedItems = [...selectedPdf];
+            const updatedItems = [...selectedItem];
             updatedItems.splice(selectedIndex, 1);
-            setSelectedPdf(updatedItems);
+            setselectedItem(updatedItems);
         }
     };
 
@@ -69,15 +69,18 @@ const ReportsQueueScreen = () => {
         setRefreshing(false);
     };
 
-    const removeFiles = async () => {
+    const removeFiles = async (fileName) => {
         try {
+            if (selectedItem.length === 0) {
+                await FileSystem.deleteAsync(FileSystem.documentDirectory + fileName);
+            }
             const directory = FileSystem.documentDirectory;
             // Iterar sobre cada nombre de archivo seleccionado y eliminarlo
-            await Promise.all(selectedPdf.map(async (fileName) => {
+            await Promise.all(selectedItem.map(async (fileName) => {
                 await FileSystem.deleteAsync(directory + fileName);
             }));
             // Limpiar la lista de archivos seleccionados
-            setSelectedPdf([]);
+            setselectedItem([]);
             // Recargar la lista de PDF y JSON
             loadPdfAndJsonList();
         } catch (error) {
@@ -86,12 +89,12 @@ const ReportsQueueScreen = () => {
     };
 
     const renderPdfItem = ({ item }) =>  {
-        const isSelected = selectedPdf.includes(item);
+        const isSelected = selectedItem.includes(item);
         const itemStyle = [styles.itemContainer, isSelected && styles.selectedItem];
 
         return (
-            <TouchableOpacity onPress={() => handlePdfPress(item)} style={itemStyle}>
-                <TouchableOpacity onPress={() => handlePdfPress(item)} style={styles.item}>
+            <TouchableOpacity onPress={() => handleItemPress(item)} style={itemStyle}>
+                <TouchableOpacity onPress={() => handleItemPress(item)} style={styles.item}>
                     <Text numberOfLines={1} ellipsizeMode="tail">{item}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => removeFiles(item)} style={styles.shareButton}>
@@ -105,8 +108,8 @@ const ReportsQueueScreen = () => {
     }
 
     const renderJsonItem = ({ item }) => (
-        <TouchableOpacity style={styles.itemContainer}>
-            <TouchableOpacity style={styles.item}>
+        <TouchableOpacity onPress={() => handleItemPress(item)} style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => handleItemPress(item)} style={styles.item}>
                 <Text numberOfLines={1} ellipsizeMode="tail">{item}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => removeFiles(item)} style={styles.shareButton}>
@@ -181,8 +184,8 @@ const styles = StyleSheet.create({
     },
     selectedItem: {
         backgroundColor: '#e7e7e7',
-        marginLeft:5,
-        marginRight:5,
+        marginLeft:7,
+        marginRight:7,
     },
     shareButton: {
         backgroundColor: 'lightblue',
