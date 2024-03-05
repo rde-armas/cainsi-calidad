@@ -4,10 +4,10 @@ import { View, Image, StyleSheet } from 'react-native';
 const SchemeRender = ({ image }) => {
     return (
         <View style={styles.container}>
-        <Image
-            style={styles.image}
-            source={{ uri: image }}
-        />
+            <Image
+                style={styles.image}
+                source={{ uri: image }}
+            />
         </View>
     );
 };

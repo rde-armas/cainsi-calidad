@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl, Linking } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl, SafeAreaView } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import Icon from "react-native-vector-icons/Ionicons";
@@ -119,7 +119,7 @@ const ReportsQueueScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Historial de PDFs</Text>
                 <FlatList
@@ -148,7 +148,7 @@ const ReportsQueueScreen = () => {
                     }
                 />
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 
