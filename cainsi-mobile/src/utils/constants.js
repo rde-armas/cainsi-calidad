@@ -18,6 +18,8 @@ const initialInputs = {
         preparacion: 'Limpieza. Iluminación apropiada.',
         resultado:'',
         scheme: {idEnvolvente:'', idCasquete:'', grid: [], gridData: {}},
+        observaciones:'',
+        firma:'',
         conclusion: '',
     },
     empty:{},

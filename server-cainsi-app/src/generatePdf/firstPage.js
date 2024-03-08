@@ -1,6 +1,7 @@
 const { addImage, dimensionAspectRatio } = require('./addImage.js');
 
-const LOGO_PATH = './src/assets/cainsi_logo.png'
+//const LOGO_PATH = './src/assets/cainsi_logo.png';
+const LOGO_PATH = '../assets/cainsi_logo.png';
 
 function addHeader(pdf, path = LOGO_PATH) {
     const rectWidth = pdf.internal.pageSize.getWidth() - 60; // Ancho de la página - márgenes
@@ -15,7 +16,7 @@ function addFooter(pdf) {
     const lineHeight = 6; // Altura de línea
     const verticalCenter = pdf.internal.pageSize.height - 18; // Posición vertical en el centro
     pdf.setFontSize(8);
-    pdf.setFont('Helvetica', 'bold');
+    pdf.setFont('Lato-Bold', 'normal');
     pdf.text('CAINSI - Servicios Industriales\n\nwww.cainsi.com', pdf.internal.pageSize.width / 2, verticalCenter, { align: 'center' });
 }
 
@@ -30,7 +31,7 @@ function createCover(pdf, deviceName, client, madeBy, photoDivice ) {
 
     // Configurar estilo para fecha
     pdf.setFontSize(12);
-    pdf.setFont('OpenSans-Regular', 'normal');
+    pdf.setFont('Lato-Light', 'normal');
 
     // Dibujar la fecha
     const dateX = pageWidth - pdf.getTextDimensions(`Montevideo, ${formattedDate}`).w - 35
@@ -42,7 +43,7 @@ function createCover(pdf, deviceName, client, madeBy, photoDivice ) {
 
     // Configurar estilo para título
     pdf.setFontSize(16);
-    pdf.setFont('OpenSans-SemiBold', 'normal');
+    pdf.setFont('Lato-Regular', 'normal');
 
     // Dibujar el título
     const title = "Informe Técnico de Medición de Espesores en\nRecipientes de Presión";
@@ -58,7 +59,7 @@ function createCover(pdf, deviceName, client, madeBy, photoDivice ) {
     pdf.line(35, titleBottomLineY, pageWidth - 35, titleBottomLineY);
 
     // Name device
-    pdf.setFont('OpenSans-Regular', 'normal');
+    pdf.setFont('Lato-Light', 'normal');
     pdf.text(deviceName, pageWidth / 2, titleBottomLineY + 15, { align: 'center' });
 
     // Añadir imagen al centro

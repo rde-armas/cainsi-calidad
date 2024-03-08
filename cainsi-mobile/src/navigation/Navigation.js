@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from "react-native-vector-icons/Ionicons";
 import HomeScreen from '../screens/HomeScreen';
-import SettingsScreen from '../screens/AddSchemeScreen';
+import AddSchemeScreen from '../screens/AddSchemeScreen';
 import ReportScreen from '../screens/ReportScreen';
 import ReportsQueueNavigation from '../screens/ReportsQueueScreen';
 
@@ -29,7 +29,7 @@ export default function Navigation() {
                 headerShown: true,
             }} />
 
-            <Tab.Screen name='scheme' component={SettingsScreen} options={{
+            <Tab.Screen name='scheme' component={AddSchemeScreen} options={{
                 tabBarLabel: "Esquemas",
                 tabBarIcon: ({ color, size }) => <Icon name="add-circle-outline" color={color} size={size} />,
                 headerShown: true,

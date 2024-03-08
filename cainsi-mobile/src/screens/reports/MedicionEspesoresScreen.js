@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, Image, SafeAreaView, Modal, Button, View, StyleSheet, Text, ScrollView, Pressable, Dimensions} from 'react-native';
 import { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent } from '../../components/inputs/InputsComponents';
+import { FirmaInputs } from '../../components/inputs/FirmaInputs';
 import PhotoInputComponent from '../../components/inputs/PhotoInputComponent';
 import SchemeList from '../../components/SchemeList';
 import GridInput from '../../components/inputs/GridInputs';
@@ -15,6 +16,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 	const [inputs, setInputs] = useState(initialInputs);
 	const [modalVisibleEnvolventes, setModalVisibleEnvoventes] = useState(false);
 	const [modalVisibleCasquetes, setModalVisibleCasquetes] = useState(false);
+	const [modalVisibleFirma, setModalVisibleFirma] = useState(false);
 	const [schemeImg, setScheme] =  useState({
 		idEnvolvente:'',
 		idCasquete: '',
@@ -66,16 +68,18 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 
 	const isObjectEmpty = (obj) => {
 		for (let key in obj) {
-			if (Array.isArray(obj[key])) {
-				if (obj[key].length === 0 || obj[key].some(item => item === undefined)) {
-					return [true, key];
-				}
-			} else if (!obj[key] || obj[key] === '' || obj[key] === undefined) {
-			  	return [true, key];
-			} else if (typeof obj[key] === 'object') {
-				const [isEmpty, nestedKey] = isObjectEmpty(obj[key]);
-				if (isEmpty) {
-					return [true, nestedKey];
+			if(key !== 'observaciones'){
+				if (Array.isArray(obj[key])) {
+					if (obj[key].length === 0 || obj[key].some(item => item === undefined)) {
+						return [true, key];
+					}
+				} else if (!obj[key] || obj[key] === '' || obj[key] === undefined) {
+					  return [true, key];
+				} else if (typeof obj[key] === 'object') {
+					const [isEmpty, nestedKey] = isObjectEmpty(obj[key]);
+					if (isEmpty) {
+						return [true, nestedKey];
+					}
 				}
 			}
 		}
@@ -240,6 +244,49 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						</View>
 					</>)
 				}
+				{/* popUp Firma */}
+					<View style={styles.centeredView}>
+						<Modal
+							animationType="slide"
+							transparent={true}
+							visible={modalVisibleFirma}
+							onRequestClose={() => {
+								Alert.alert('No seleccioné ningún esquema.');
+								setModalVisibleFirma(!modalVisibleFirma);
+							}}>
+							<View style={styles.centeredView}>
+								<View style={styles.modalViewFirma}>
+									<FirmaInputs inputName={'firma'} onInputFrirma={(firma)=> {
+										const img = firma.replace("data:image/jpeg;base64,", "");
+										handleInputChange('firma', img);
+										console.log('firmas', inputs.firma);
+										initialInputs.firma = firma;
+										setModalVisibleFirma(!modalVisibleFirma);
+									}}/>
+								</View>
+							</View>
+						</Modal>
+						<Pressable
+							style={[styles.button, styles.buttonOpen]}
+							onPress={() => setModalVisibleFirma(true)}>
+							<Text style={styles.textStyle}>Firmar</Text>
+						</Pressable>
+					</View>
+				{/* Fin PopUP FIrma */}
+				{	
+					initialInputs.firma && (
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
+							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
+								<Image
+									source={{uri: initialInputs.firma}}
+									style={{ flex: 1, width: undefined, height: undefined }}
+									resizeMode="contain"
+									/>
+							</View>
+						</View>
+					)
+				}
+				
 				<TextMultiLineInputComponent inputName='conclusion' label='Conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
 				<View style={{ margin: 20 }}>
  					<Button title="Crear PDF" onPress={handleSubmit} />
@@ -262,6 +309,22 @@ const styles = StyleSheet.create({
 	modalView: {
 		width: '95%',
 		height:'95%',
+		margin: 20,
+		backgroundColor: 'white',
+		borderRadius: 20,
+		padding: 35,
+		//shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+	},
+	modalViewFirma: {
+		width: '95%',
+		height:'60%',
 		margin: 20,
 		backgroundColor: 'white',
 		borderRadius: 20,

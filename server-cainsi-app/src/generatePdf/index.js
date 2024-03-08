@@ -1,9 +1,9 @@
 const { jsPDF } = require('jspdf');
 const { addHeader, addFooter, createCover } = require('./firstPage.js');
 const { addScheme, checkPageOverflow } = require('./addScheme.js');
-const { OpenSansSemiBold } = require('../utils/OpenSans-SemiBold-normal.js');
-const { OpenSansBold } = require('../utils/OpenSans-Bold-normal.js');
-const { OpenSansRegular } = require('../utils/OpenSans-Regular-normal.js');
+const { LatoRegular } = require('../utils/Lato-Regular-normal.js');
+const { LatoLight } = require('../utils/Lato-Light-normal.js');
+const { LatoBold } = require('../utils/Lato-Bold-normal.js');
 
 const FONT_SIZE_SECCTION = 14;
 
@@ -52,12 +52,12 @@ const sections = [
 
 // load fonts
 var callAddFont = function () {
-    this.addFileToVFS('OpenSans-Regular-normal.ttf', OpenSansRegular);
-    this.addFont('OpenSans-Regular-normal.ttf', 'OpenSans-Regular', 'normal');
-    this.addFileToVFS('OpenSans-Bold-normal.ttf', OpenSansBold);
-    this.addFont('OpenSans-Bold-normal.ttf', 'OpenSans-Bold', 'normal');
-    this.addFileToVFS('OpenSans-SemiBold-normal.ttf', OpenSansSemiBold);
-    this.addFont('OpenSans-SemiBold-normal.ttf', 'OpenSans-SemiBold', 'normal');
+    this.addFileToVFS('Lato-Regular-normal.ttf', LatoRegular);
+    this.addFont('Lato-Regular-normal.ttf', 'Lato-Regular', 'normal');
+    this.addFileToVFS('Lato-Bold-normal.ttf', LatoBold);
+    this.addFont('Lato-Bold-normal.ttf', 'Lato-Bold', 'normal');
+    this.addFileToVFS('Lato-Light-normal.ttf', LatoLight);
+    this.addFont('Lato-Light-normal.ttf', 'Lato-Light', 'normal');
 };
 
 jsPDF.API.events.push(['addFonts', callAddFont])
@@ -65,7 +65,7 @@ jsPDF.API.events.push(['addFonts', callAddFont])
 const generatePDF = async (data) => { 
     const {dispositivo, cliente, elaborado, photoDivice} = data;
     const doc = new jsPDF();
-    doc.setFont('OpenSans-Regular', 'normal');
+    doc.setFont('Lato-Light', 'normal');
     addHeader(doc);
     createCover(doc, dispositivo, cliente, elaborado, photoDivice);
     addFooter(doc);
@@ -73,12 +73,13 @@ const generatePDF = async (data) => {
     addHeader(doc);
     addFooter(doc);
     addContent(doc, data);
-    const arrayBuffer = doc.output('arraybuffer');
-    return arrayBuffer;
+    doc.save('InformeTecnico.pdf');
+    //const arrayBuffer = doc.output('arraybuffer');
+    //return arrayBuffer;
 };
 
 // Función para agregar contenido
-const addContent = (doc, data) => {
+const addContent = async (doc, data) => {
     const { resolucion, minRange, maxRange, palpador, diametro} = data;
     let yPos = 40; // posición vertical inicial
     const pageHeight = doc.internal.pageSize.height;
@@ -94,7 +95,7 @@ const addContent = (doc, data) => {
             titleLines = doc.splitTextToSize(section.title, maxWidth);
             
             // content
-            doc.setFont('OpenSans-Regular', 'normal');
+            doc.setFont('Lato-Light', 'normal');
             contentLines = doc.splitTextToSize(`- Resolución: ${resolucion} mm\n- Rango de medida: ${minRange} a ${maxRange}mm\n- Scan basado en tiempo A/B y compuerta\n- Palpador: ${palpador}, diámetro ${diametro}mm`, maxWidth);
             yPos = checkPageOverflow(doc, yPos, contentLines.length * 7 + titleLines.length * 6);
         } else if (section.content === 'scheme') {
@@ -103,7 +104,7 @@ const addContent = (doc, data) => {
             return;
         }  else if(section.content === 'ensayo'){
             titleLines = doc.splitTextToSize(section.title, maxWidth);
-            doc.setFont('OpenSans-Bold', 'normal');
+            doc.setFont('Lato-Bold', 'normal');
             doc.setFontSize(FONT_SIZE_SECCTION);
             
             doc.text(xposTitle , yPos, titleLines);
@@ -130,16 +131,16 @@ const addContent = (doc, data) => {
         
         //title
         if(isNaN(parseInt(section.title[0]))) {
-            doc.setFont('OpenSans-SemiBold', 'normal');
+            doc.setFont('Lato-Regular', 'normal');
         } else {
-            doc.setFont('OpenSans-Bold', 'normal');
+            doc.setFont('Lato-Bold', 'normal');
         }
         doc.setFontSize(FONT_SIZE_SECCTION);
         doc.text(xposTitle , yPos, titleLines);
         yPos += titleLines.length * 7;
         
         //content
-        doc.setFont('OpenSans-Regular', 'normal');
+        doc.setFont('Lato-Light', 'normal');
         doc.setFontSize(11);
         doc.text(xposContent, yPos, contentLines);
         yPos += contentLines.length * 7;
@@ -152,6 +153,14 @@ const addContent = (doc, data) => {
             yPos = 50; // Reset yPos for new page
         }
     });
+    const pageWidth = doc.internal.pageSize.width;
+    const imageX = (pageWidth - 40 ) / 2;
+    yPos = checkPageOverflow(doc, yPos, 30);
+    doc.addImage(data.firma, 'JPEG', imageX, yPos, 40, 30);
+    yPos+= 33;
+    const widthText =  doc.getTextWidth(data.elaborado);
+    const textX = (pageWidth - widthText ) / 2;
+    doc.text(data.elaborado, textX , yPos);
 };
 
 module.exports =  { generatePDF }
