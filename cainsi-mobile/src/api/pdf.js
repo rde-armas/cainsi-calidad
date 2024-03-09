@@ -3,9 +3,9 @@ import { decode } from 'base-64';
 
 const sendJSONToServer = async (jsonData) => {
     try {
-        //fetch('https://eltpjtzpzk.execute-api.sa-east-1.amazonaws.com/dev/cainsi-pdf', {
-            fetch('http://192.168.1.6:3000/receive-json', {
-        method: 'POST',
+        fetch('https://eltpjtzpzk.execute-api.sa-east-1.amazonaws.com/dev/cainsi-pdf', {
+            //fetch('http://192.168.1.6:3000/receive-json', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -22,7 +22,7 @@ const sendJSONToServer = async (jsonData) => {
             reader.readAsDataURL(blob); // Leer el Blob como una URL de datos
             reader.onload =  () => {
                 const base64Data = reader.result.split(",")[1]; // Extraer la parte de la cadena que contiene la base64 pura
-                const currentDate = new Date.now();
+                const currentDate = new Date;
                 const year = currentDate.getFullYear();
                 const month = currentDate.getMonth() + 1;
                 const day = currentDate.getDate();
@@ -34,7 +34,7 @@ const sendJSONToServer = async (jsonData) => {
             };
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error fetch:', error);
             throw error;
         });     
     } catch (error) {
@@ -45,10 +45,12 @@ const sendJSONToServer = async (jsonData) => {
 
 // Save archivos
 async function saveBlobAsPDF(base64Data, fileName) {
+    console.log('Saving blob as PDF');
     const binaryData = decode(base64Data);
     const base64String = binaryData.toString('base64');
     const directory = FileSystem.documentDirectory;
     FileSystem.writeAsStringAsync(directory + fileName, base64String, { encoding: FileSystem.EncodingType.Base64 });
+
 }
 
 export { sendJSONToServer };

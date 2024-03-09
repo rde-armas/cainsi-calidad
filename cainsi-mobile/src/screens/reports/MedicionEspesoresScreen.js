@@ -12,7 +12,7 @@ import { envolventes, casquetes } from '../../utils/constants';
 
 const MedicionEspesoresScreen = ({ navigation }) => {
 	const { reportInputs, resetReportValues } = React.useContext(ReportContext);
-	let initialInputs = reportInputs;
+	let initialInputs = {...reportInputs};
 	const [inputs, setInputs] = useState(initialInputs);
 	const [modalVisibleEnvolventes, setModalVisibleEnvoventes] = useState(false);
 	const [modalVisibleCasquetes, setModalVisibleCasquetes] = useState(false);
@@ -244,6 +244,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						</View>
 					</>)
 				}
+				<TextMultiLineInputComponent inputName='firmaRes' label='Responsable' defaultInput={initialInputs.firmaRes} onInputChange={handleInputChange} />
 				{/* popUp Firma */}
 					<View style={styles.centeredView}>
 						<Modal
@@ -259,7 +260,6 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 									<FirmaInputs inputName={'firma'} onInputFrirma={(firma)=> {
 										const img = firma.replace("data:image/jpeg;base64,", "");
 										handleInputChange('firma', img);
-										console.log('firmas', inputs.firma);
 										initialInputs.firma = firma;
 										setModalVisibleFirma(!modalVisibleFirma);
 									}}/>

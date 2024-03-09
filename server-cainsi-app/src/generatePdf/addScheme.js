@@ -5,10 +5,10 @@ const { addHeader, addFooter } = require('./firstPage.js');
 const addScheme = (doc, imageY, scheme, title) => {
     const pageWidth = doc.internal.pageSize.width;
     
-    // const imagePathEnv = `./src/assets/envolventes/${scheme.idEnvolvente}.png`;
-    // const imagePathCas = `./src/assets/casquetes/${scheme.idCasquete}.png`;
-    const imagePathEnv = `../assets/envolventes/${scheme.idEnvolvente}.png`;
-    const imagePathCas = `../assets/casquetes/${scheme.idCasquete}.png`;
+    const imagePathEnv = `./src/assets/envolventes/${scheme.idEnvolvente}.png`;
+    const imagePathCas = `./src/assets/casquetes/${scheme.idCasquete}.png`;
+    // const imagePathEnv = `../assets/envolventes/${scheme.idEnvolvente}.png`;
+    // const imagePathCas = `../assets/casquetes/${scheme.idCasquete}.png`;
 
     const { width, height } = dimensionAspectRatio(imagePathEnv, pageWidth - 90, 90);
     const imageXEnv = (pageWidth - width) / 2;
@@ -63,8 +63,10 @@ const addGrid = (doc, scheme, yPos) => {
             let maxWidthInColumn = 0;
             for (let i = 0; i < numRows; i++) {
                 const cellData = data[i][j];
-                const cellWidth = doc.getStringUnitWidth(cellData.toString()) * fontSize; // Ancho del texto en la celda
-                maxWidthInColumn = Math.max(maxWidthInColumn, cellWidth);
+                let chararray = [];
+                chararray = doc.getCharWidthsArray(cellData.toString());
+                const cellWidth = doc.getStringUnitWidth(cellData.toString()) * 12 * 25.6 /72 + 2 ;// Ancho del texto en la celda
+                maxWidthInColumn = Math.max(maxWidthInColumn, cellWidth, 10);
             }
             columnWidths.push(maxWidthInColumn);
         }
@@ -97,8 +99,10 @@ const addGrid = (doc, scheme, yPos) => {
             for (let j = 0; j < data[i].length; j++) {
                 const cellData = data[i][j];
                 const cellWidth = columnWidths[j];
+                const textWidth = doc.getStringUnitWidth(cellData.toString()) * 12 * 25.6 /72 + 2;
+                const xPosCentered = xPos + (cellWidth - textWidth) / 2 + 1;
                 doc.rect(xPos, yPosGrid, cellWidth, lineHeight); // Dibujar celda
-                doc.text(cellData.toString(), xPos + 2, yPosGrid + fontSize / 2); // Agregar texto a la celda
+                doc.text(cellData.toString(), xPosCentered, yPosGrid + fontSize / 2); // Agregar texto a la celda
                 xPos += cellWidth; // Mover a la siguiente posición X
             }
             xPos = (maxWidth - tableWidth) / 2 + xOffset; // Reiniciar la posición X para la próxima fila
@@ -133,7 +137,7 @@ const addMedidasEnMM = (doc) => {
     
     // Definir posición para la línea y el texto del pie de página
     let lineHeight = 4; // Altura de la línea
-    let footerText = '¹Todas las medidas están en mm';
+    let footerText = '¹Todos los valores estas expresados en mm';
     let footerTextSize = 7; // Tamaño de la fuente para el texto del pie de página
     let footerTextPadding = 25; // Espacio entre la línea y el texto del pie de página
     let footerTextX = 30; // Posición X del texto del pie de página

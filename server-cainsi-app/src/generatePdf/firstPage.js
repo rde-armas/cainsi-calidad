@@ -1,7 +1,7 @@
 const { addImage, dimensionAspectRatio } = require('./addImage.js');
 
-//const LOGO_PATH = './src/assets/cainsi_logo.png';
-const LOGO_PATH = '../assets/cainsi_logo.png';
+const LOGO_PATH = './src/assets/cainsi_logo.png';
+//const LOGO_PATH = '../assets/cainsi_logo.png';
 
 function addHeader(pdf, path = LOGO_PATH) {
     const rectWidth = pdf.internal.pageSize.getWidth() - 60; // Ancho de la página - márgenes

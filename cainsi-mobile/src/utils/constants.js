@@ -19,6 +19,7 @@ const initialInputs = {
         resultado:'',
         scheme: {idEnvolvente:'', idCasquete:'', grid: [], gridData: {}},
         observaciones:'',
+        firmaRes: '',
         firma:'',
         conclusion: '',
     },

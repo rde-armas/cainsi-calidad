@@ -73,9 +73,9 @@ const generatePDF = async (data) => {
     addHeader(doc);
     addFooter(doc);
     addContent(doc, data);
-    doc.save('InformeTecnico.pdf');
-    //const arrayBuffer = doc.output('arraybuffer');
-    //return arrayBuffer;
+    //doc.save('InformeTecnico.pdf');
+    const arrayBuffer = doc.output('arraybuffer');
+    return arrayBuffer;
 };
 
 // Función para agregar contenido
@@ -154,13 +154,33 @@ const addContent = async (doc, data) => {
         }
     });
     const pageWidth = doc.internal.pageSize.width;
-    const imageX = (pageWidth - 40 ) / 2;
-    yPos = checkPageOverflow(doc, yPos, 30);
+    let lines = [];
+    if (data.firmaRes.includes('\n')){
+        lines = data.firmaRes.split('\n');
+    } else {
+        lines.push(data.firmaRes);
+        lines.push('');
+    }
+
+    // Calcular el ancho de cada línea de texto
+    const widthTextLine1 = doc.getTextWidth(lines[0]);
+    const widthTextLine2 = doc.getTextWidth(lines[1]);
+
+    // Calcular la posición X para cada línea de texto
+    const textXLine1 = (pageWidth - widthTextLine1) / 2;
+    const textXLine2 = (pageWidth - widthTextLine2) / 2;
+    
+    yPos = checkPageOverflow(doc, yPos, 40);
+    // Calcular la posición Y para ambas líneas de texto
+    const yPosLine1 = yPos; 
+    const yPosLine2 = yPos + 6; 
+    yPos+=8;
+
+    doc.text(lines[0], textXLine1, yPosLine1);
+    doc.setFont('Lato-Bold', 'normal');
+    doc.text(lines[1], textXLine2, yPosLine2);
+    const imageX = (pageWidth - 38 ) / 2;
     doc.addImage(data.firma, 'JPEG', imageX, yPos, 40, 30);
-    yPos+= 33;
-    const widthText =  doc.getTextWidth(data.elaborado);
-    const textX = (pageWidth - widthText ) / 2;
-    doc.text(data.elaborado, textX , yPos);
 };
 
 module.exports =  { generatePDF }

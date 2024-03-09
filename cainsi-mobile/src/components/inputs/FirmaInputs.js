@@ -19,26 +19,15 @@ const FirmaInputs = ({onInputFrirma}) => {
     const handleClear = () => {
          console.log("clear success!");
     };
-  
-    // Called after end of stroke
-    const handleEnd = () => {
-        ref.current.readSignature();
-    };
-  
-    // Called after ref.current.getData()
-    const handleData = (data) => {
-      //console.log(data);
-    };
 
     return (
         <View style={{ flex: 1 }}>
             <SignatureCanvas
                 ref={ref}
-                onEnd={handleEnd}
                 onOK={handleOK}
+                //onEnd={handleEnd}
                 onEmpty={handleEmpty}
                 onClear={handleClear}
-                onGetData={handleData}
                 backgroundColor="#ffffff"
                 strokeColor="#000000"
                 minStrokeWidth={2}

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native'; 
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl, SafeAreaView } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
@@ -10,10 +11,11 @@ const ReportsQueueScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [selectedItem, setselectedItem] = useState([]);
 
-    useEffect(() => {
-        loadPdfAndJsonList();
-    }, []);
-
+    useFocusEffect(
+        React.useCallback(() => {
+            loadPdfAndJsonList();
+        }, [])
+    );
     const loadPdfAndJsonList = async () => {
         try {
             const directory = FileSystem.documentDirectory;
@@ -107,19 +109,23 @@ const ReportsQueueScreen = () => {
         );
     }
 
-    const renderJsonItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handleItemPress(item)} style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => handleItemPress(item)} style={styles.item}>
-                <Text numberOfLines={1} ellipsizeMode="tail">{item}</Text>
+    const renderJsonItem = ({ item }) => {
+        const isSelected = selectedItem.includes(item);
+        const itemStyle = [styles.itemContainer, isSelected && styles.selectedItem];
+        
+        return (
+            <TouchableOpacity onPress={() => handleItemPress(item)} style={itemStyle}>
+                <TouchableOpacity onPress={() => handleItemPress(item)} style={styles.item}>
+                    <Text numberOfLines={1} ellipsizeMode="tail">{item}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => removeFiles(item)} style={styles.shareButton}>
+                        <Icon name='trash-outline'/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => loadPayload(item)} style={styles.shareButton}>
+                    <Text onPress={() => loadPayload(item)} style={styles.shareButtonText}>Cargar datos</Text>
+                </TouchableOpacity>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => removeFiles(item)} style={styles.shareButton}>
-                    <Icon name='trash-outline'/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSharePdf(item)} style={styles.shareButton}>
-                <Text onPress={() => loadPayload(item)} style={styles.shareButtonText}>Cargar datos</Text>
-            </TouchableOpacity>
-        </TouchableOpacity>
-    );
+    )};
 
     return (
         <SafeAreaView style={styles.container}>
