@@ -3,7 +3,7 @@ import { Alert, Image, SafeAreaView, Modal, Button, View, StyleSheet, Text, Scro
 import { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent } from '../../components/inputs/InputsComponents';
 import { FirmaInputs } from '../../components/inputs/FirmaInputs';
 import PhotoInputComponent from '../../components/inputs/PhotoInputComponent';
-import SchemeList from '../../components/SchemeList';
+import { SchemeList } from '../../components/SchemeList';
 import GridInput from '../../components/inputs/GridInputs';
 import { sendJSONToServer } from '../../api/pdf';
 import { saveJSONToDevice } from '../../utils/saveJSONToDevice';
@@ -16,7 +16,8 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 	const [inputs, setInputs] = useState(initialInputs);
 	const [modalVisibleEnvolventes, setModalVisibleEnvoventes] = useState(false);
 	const [modalVisibleCasquetes, setModalVisibleCasquetes] = useState(false);
-	const [modalVisibleFirma, setModalVisibleFirma] = useState(false);
+	const [modalVisibleFirma1, setModalVisibleFirma1] = useState(false);
+	const [modalVisibleFirma2, setModalVisibleFirma2] = useState(false);
 	const [schemeImg, setScheme] =  useState({
 		idEnvolvente:'',
 		idCasquete: '',
@@ -161,11 +162,9 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						<View style={styles.centeredView}>
 							<View style={styles.modalView}>
 								<SchemeList onSelectImage={(id, grid, image) => {
-									// Manejar el id de la imagen seleccionada aquí
-									// setear el id de la imagen en la lista de inputs
 										handleSchemeSet(id, grid, image);
 										setModalVisibleEnvoventes(!modalVisibleEnvolventes);
-									}} images={envolventes}/>
+									}} type='envolventes'/>
 							</View>
 						</View>
 					</Modal>
@@ -183,7 +182,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
 							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
 								<Image
-									source={schemeImg.imageUriEnv}
+									source={{uri: `data:image/jpeg;base64,${schemeImg.imageUriEnv}`}}
 									style={{ flex: 1, width: undefined, height: undefined }}
 									resizeMode="contain"
 								/>
@@ -210,7 +209,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 										// setear el id de la imagen en la lista de inputs
 											handleCasqueteSet(id, grid, image);
 											setModalVisibleCasquetes(!modalVisibleCasquetes);
-										}} images={casquetes}/>
+										}} type='casquetes'/>
 								</View>
 							</View>
 						</Modal>
@@ -231,7 +230,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
 							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
 								<Image
-									source={schemeImg.imageUriCas}
+									source={{ uri:`data:image/jpeg;base64,${schemeImg.imageUriCas}`}}
 									style={{ flex: 1, width: undefined, height: undefined }}
 									resizeMode="contain"
 								/>
@@ -250,35 +249,63 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						<Modal
 							animationType="slide"
 							transparent={true}
-							visible={modalVisibleFirma}
+							visible={modalVisibleFirma1}
 							onRequestClose={() => {
-								Alert.alert('No seleccioné ningún esquema.');
-								setModalVisibleFirma(!modalVisibleFirma);
+								Alert.alert('No se realizó ninguna firma.');
+								setModalVisibleFirma1(!modalVisibleFirma1);
 							}}>
 							<View style={styles.centeredView}>
 								<View style={styles.modalViewFirma}>
-									<FirmaInputs inputName={'firma'} onInputFrirma={(firma)=> {
+									<FirmaInputs onInputFrirma={(firma)=> {
 										const img = firma.replace("data:image/jpeg;base64,", "");
-										handleInputChange('firma', img);
-										initialInputs.firma = firma;
-										setModalVisibleFirma(!modalVisibleFirma);
+										handleInputChange('firma1', img);
+										initialInputs.firma1 = firma;
+										console.log('firma', initialInputs.firma1);
+										setModalVisibleFirma1(!modalVisibleFirma1);
 									}}/>
 								</View>
 							</View>
 						</Modal>
 						<Pressable
 							style={[styles.button, styles.buttonOpen]}
-							onPress={() => setModalVisibleFirma(true)}>
+							onPress={() => setModalVisibleFirma1(true)}>
 							<Text style={styles.textStyle}>Firmar</Text>
+						</Pressable>
+					</View>
+					{/* segunda firma */}
+					<View style={styles.centeredView}>
+						<Modal
+							animationType="slide"
+							transparent={true}
+							visible={modalVisibleFirma2}
+							onRequestClose={() => {
+								Alert.alert('No se realizó ninguna firma.');
+								setModalVisibleFirma2(!modalVisibleFirma2);
+							}}>
+							<View style={styles.centeredView}>
+								<View style={styles.modalViewFirma}>
+									<FirmaInputs onInputFrirma={(firma)=> {
+										const img = firma.replace("data:image/jpeg;base64,", "");
+										handleInputChange('firma2', img);
+										initialInputs.firma2 = firma;
+										setModalVisibleFirma2(!modalVisibleFirma2);
+									}}/>
+								</View>
+							</View>
+						</Modal>
+						<Pressable
+							style={[styles.button, styles.buttonOpen]}
+							onPress={() => setModalVisibleFirma2(true)}>
+							<Text style={styles.textStyle}>Agregar segunda firma.</Text>
 						</Pressable>
 					</View>
 				{/* Fin PopUP FIrma */}
 				{	
-					initialInputs.firma && (
+					initialInputs.firma1 && (
 						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
 							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
 								<Image
-									source={{uri: initialInputs.firma}}
+									source={{uri: initialInputs.firma1}}
 									style={{ flex: 1, width: undefined, height: undefined }}
 									resizeMode="contain"
 									/>
@@ -286,6 +313,20 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						</View>
 					)
 				}
+				{	
+					initialInputs.firma2 && (
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
+							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
+								<Image
+									source={{uri: initialInputs.firma2}}
+									style={{ flex: 1, width: undefined, height: undefined }}
+									resizeMode="contain"
+									/>
+							</View>
+						</View>
+					)
+				}
+
 				
 				<TextMultiLineInputComponent inputName='conclusion' label='Conclusion' defaultInput={initialInputs.conclusion} onInputChange={handleInputChange} />
 				<View style={{ margin: 20 }}>

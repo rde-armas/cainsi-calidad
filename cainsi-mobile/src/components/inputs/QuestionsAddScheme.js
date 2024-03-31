@@ -1,23 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, TextInput, Text, StyleSheet, ScrollView, Image, Button } from 'react-native';
 
 function QuestionsAddScheme({ image, setData }) {
-	const [numInputs, setNumInputs] = useState(0);
   	const [inputValues, setInputValues] = useState({});
+	const [selectedOption, setSelectedOption] = useState('');
+	const [selectedDirection, setSelectedDirection] = useState('');
 
-	// Función para actualizar el estado con el nuevo número
-	const handleNumInputsChange = (text) => {
-		const num = parseInt(text);
-		if(text === '' || isNaN(num)) {
-			setNumInputs(0);
-			setInputValues([]);
-			return;
-		}
-		setNumInputs(num);
-		// Reiniciar los valores de los inputs
-		setInputValues(Array(num).fill(''));
-	};
-	
 	// Función para manejar los cambios en los valores de los inputs
 	const handleInputChange = (text, index) => {
 		const newInputValues = {...inputValues};
@@ -34,51 +22,96 @@ function QuestionsAddScheme({ image, setData }) {
 				style={{ flex: 1, width: undefined, minHeight: 300, margin: 15}}
 				resizeMode="contain"
 			/>
-			<Text style={styles.label}>Ingrese la cantidad de tablas:</Text>
-			<TextInput
-				style={styles.input}
-				placeholder="Ingrese un número"
-				onChangeText={handleNumInputsChange}
-				keyboardType="numeric"
-			/>
+			<View style={styles.buttonContainer}>
+                <Button
+                    title="Envolvente"
+                    onPress={() => {
+							setSelectedOption('envolvente');
+							handleInputChange('envolvente', 'title');
+						}
+					}
+                    color={selectedOption === 'envolvente' ? 'gray' : null}
+                />
+                <Button
+                    title="Casquete"
+                    onPress={() => {
+							setSelectedOption('casquete');
+							handleInputChange('casquete', 'title');
+						}
+					}
+                    color={selectedOption === 'casquete' ? 'gray' : null}
+                />
+            </View>
 			{
-				numInputs !== 0 && 
+				selectedOption !== '' && 
 				<Text style={styles.help}>
-					Para colocar los nombres(filas o columnas), debes seguir el siguiente patrón: 
-					"A,B,C", donde después de dar el nombre de una columna (o fila),
-					debes colocar una coma "," para separarla de la siguiente..
+					Para colocar los nombres que identifican los puntos de medicion, 
+					debera seguir el siguiente patrón: "A,B,C", donde después de dar
+					el nombre de de un punto,debe colocar una coma "," para separarla
+					de la siguiente.
 				</Text>
 			}
-			{/* Renderizar los inputs según el número ingresado */}
-			{
-				Array.from({ length: numInputs }, (_, index) => (
-					<View key={index}>
-						<Text style={styles.label}>Ingresar el titulo de la tabla {index + 1}: </Text>
+
+			{ 
+				selectedOption === 'envolvente' && 
+				(
+					<View >
+						<View >
+							<Text style={styles.label}>Ingresar las secciones a medir según esquema: </Text>
+							<TextInput
+								key={'seccion'}
+								style={styles.input}
+								placeholder={`Ingresar nombres`}
+								value={inputValues['seccion']}
+								onChangeText={(text) => handleInputChange(text, 'seccion')}
+							/>
+							<Text style={styles.label}>Ingresar las direcciones a medir según esquema:</Text>
+							<TextInput
+								key={'direccion'}
+								style={styles.input}
+								placeholder={`Ingresar nombres`}
+								value={inputValues['direccion']}
+								onChangeText={(text) => handleInputChange(text, 'direccion')}
+							/>
+						</View>
+						<View style={styles.buttonContainer}>
+							<Button
+								title="Vertical"
+								onPress={() => {
+										setSelectedDirection('vertical');
+										handleInputChange('vertical', 'direction');
+									}
+								}
+								color={selectedDirection === 'vertical' ? 'gray' : null}
+							/>
+							<Button
+								title="Horizontal"
+								onPress={() => {
+										setSelectedDirection('horizontal');
+										handleInputChange('horizontal', 'direction');
+									}
+								}
+								color={selectedDirection === 'horizontal' ? 'gray' : null}
+							/>
+						</View>
+					</View>
+				)
+			}
+			{ 
+				selectedOption === 'casquete' && 
+				(
+					<View >
+						<Text style={styles.label}>Ingresar el identificador de los puntos de medicion: </Text>
 						<TextInput
-							key={'title' + index}
+							key={'rows'}
 							style={styles.input}
 							placeholder={`Ingresar nombres`}
-							value={inputValues[`title${index}`]}
-							onChangeText={(text) => handleInputChange(text, `title${index}`)}
+							value={inputValues[`rows`]}
+							onChangeText={(text) => handleInputChange(text, 'rows')}
 						/>
-						<Text style={styles.label}>Ingresar el nombre de las columnas de la tabla {index + 1}: </Text>
-						<TextInput
-							key={'columns' + index}
-							style={styles.input}
-							placeholder={`Ingresar nombres`}
-							value={inputValues[`columns${index}`]}
-							onChangeText={(text) => handleInputChange(text, `columns${index}`)}
-						/>
-						<Text style={styles.label}>Ingresar el nombre de las filas de la tabla {index + 1}</Text>
-						<TextInput
-							key={'rows' + index}
-							style={styles.input}
-							placeholder={`Ingresar nombres`}
-							value={inputValues[`rows${index}`]}
-							onChangeText={(text) => handleInputChange(text, `rows${index}`)}
-						/>
-				</View>
-			))}
+					</View>
+				)
+			}
 		</ScrollView>
 	);
 };
@@ -109,7 +142,12 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		marginBottom: 15,
 		marginTop: 15,
-	}
+	},
+	buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginBottom: 10,
+    },
 });
 
 export { QuestionsAddScheme }

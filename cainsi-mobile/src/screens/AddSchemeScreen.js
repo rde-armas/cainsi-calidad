@@ -9,20 +9,28 @@ import { QuestionsAddScheme } from '../components/inputs/QuestionsAddScheme';
 export default function AddSchemeScreen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [images, setImages] = useState([]);
-    const [numero, setNumero] = useState(0);
     const [image, setImage] = useState({ id: '', source: null });
     const [data, setData] = useState([]);
+    const [isVisible, setIsVisible] = useState(false);
     const [base64Image, setBase64Image] = useState('');
 
     useEffect(() => {
-        loadImages();
-    }, []);
+        if(isVisible){
+            loadImages();
+        } 
+    }, [isVisible]);
 
     const loadImages = async () => {
         try {
             const directory = FileSystem.documentDirectory + 'esquemas'; 
             const files = await FileSystem.readDirectoryAsync(directory);
-            const imagesData = files.map(file => ({ id: file, source: { uri: `${directory}/${file}` } }));
+
+            // Filtrar solo los archivos con extensión ".jpeg"
+            const jpegFiles = files.filter(file => file.endsWith('.jpeg'));
+            const imagesData = jpegFiles.map(file => {
+                const id = file.replace('.jpeg', '');
+                return { id, source: { uri: `${directory}/${file}` } }
+            });
             setImages(imagesData);
         } catch (error) {
             console.error('Error cargando imágenes:', error);
@@ -35,12 +43,37 @@ export default function AddSchemeScreen() {
 
 	const removeImage = async (id) => {
 		try {
-            await loadImages();
-			const directory = FileSystem.documentDirectory + 'esquemas/';
-			const image = images.find(image => image.id === id);
-			await FileSystem.deleteAsync(`${directory}${image.id}`);
-			setImages(images => images.filter(image => image.id !== id));
-			console.log('Imagen eliminada:', image);
+            const directory = FileSystem.documentDirectory + 'esquemas/';
+            const img = images.find(img => img.id === id);
+            console.log('Imagen a eliminar:', images);
+            
+            // Eliminar la imagen del sistema de archivos
+            await FileSystem.deleteAsync(`${directory}${img.id}.jpeg`);
+
+            // Eliminar los datos asociados al esquema del archivo JSON
+            const filePath = directory + 'escheme_mediciones_espesores.json';
+            const fileInfo = await FileSystem.getInfoAsync(filePath);
+            if (fileInfo.exists) {
+                const existingContent = await FileSystem.readAsStringAsync(filePath);
+                const existingData = JSON.parse(existingContent);
+                
+                // Filtrar el arreglo de datos para eliminar el objeto asociado al esquema eliminado
+                //console.log('Datos del esquema en el archivo:', existingData);
+                const newCasquetes = existingData.casquetes.filter(item => item.id !== id);
+                const newEnvolventes = existingData.envolventes.filter(item => item.id !== id);
+                // Crear un nuevo objeto de datos con las listas actualizadas
+                const newData = {
+                    casquetes: newCasquetes,
+                    envolventes: newEnvolventes
+                };
+                //console.log('Datos del esquema eliminados del archivo:', newData);
+                
+                // Escribir los datos actualizados de vuelta al archivo
+                await FileSystem.writeAsStringAsync(filePath, JSON.stringify(newData));
+            }
+        
+            // Actualizar el estado de las imágenes
+            setImages(images => images.filter(img => img.id !== id));
 		} catch (err) {
 			console.error('Error al eliminar la imagen:', err);
 		}
@@ -66,7 +99,7 @@ export default function AddSchemeScreen() {
                 setBase64Image(manipResult.base64);
 				const directory = FileSystem.documentDirectory + 'esquemas/';
                 const date = Date.now().toString();
-				const newImageUri = `${directory}${date}.jpg`;
+				const newImageUri = `${directory}${date}.jpeg`;
 	
 				await FileSystem.copyAsync({
 					from: manipResult.uri,
@@ -85,14 +118,15 @@ export default function AddSchemeScreen() {
 
     const handleDataToGrid = async (data) => {
         const gridData = {id: image.id, grid: [], source: base64Image};
-        for(const key in data) {
-            if(key.startsWith('title')) {
-                const index = key.replace('title', '');
-                const title = data[key];
-                const columns = data[`columns${index}`].split(',');
-                const rows = data[`rows${index}`].split(',');
-                gridData.grid.push([title, columns, rows]);
+        if(data.title === 'envolvente') {
+            gridData.grid.push(['Envolvente', data.seccion.split(','), data.direccion.split(',')]);
+            if(data.direction === 'horizontal') {
+                gridData.grid.push(['Casquete', ['Derecho', 'Izquierdo']]);
+            } else {
+                gridData.grid.push(['Casquete', ['Inferior', 'Superior']]);
             }
+        } else {
+            gridData.grid.push(data.rows.split(','));
         }
         
         // Ruta de la carpeta y archivo
@@ -110,7 +144,7 @@ export default function AddSchemeScreen() {
                 const existingData = JSON.parse(existingContent);
 
                 // Agregar el nuevo objeto gridData al arreglo existente
-                existingData.push(gridData);
+                existingData[`${data.title}s`].push(gridData);
 
                 // Escribir contenido actualizado de vuelta al archivo
                 await FileSystem.writeAsStringAsync(filePath, JSON.stringify(existingData));
@@ -121,22 +155,16 @@ export default function AddSchemeScreen() {
         } else {
             // Si el archivo no existe, escribir el objeto gridData en un nuevo archivo JSON
             try {
-                await FileSystem.writeAsStringAsync(filePath, JSON.stringify([gridData]));
+                const dataScheme = {casquetes: [], envolventes:[]}
+                dataScheme[`${data.title}s`].push(gridData);
+                await FileSystem.writeAsStringAsync(filePath, JSON.stringify(dataScheme));
                 console.log('Archivo creado con el nuevo objeto:', filePath);
             } catch (error) {
                 console.error('Error al crear el archivo:', error);
             }
         }
-
-        // Leer el contenido del archivo y hacer un console.log
-                            try {
-                                const fileContent = await FileSystem.readAsStringAsync(filePath);
-                                console.log('Contenido del archivo:', fileContent);
-                            } catch (error) {
-                                console.error('Error al leer el archivo:', error);
-                            }
     };
-
+    
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
@@ -145,18 +173,19 @@ export default function AddSchemeScreen() {
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
                     <TouchableOpacity 
-                        onPress={() => handleImagePress(item.id, item.grid, item.source)}
-                        style={styles.touchable}    
+                    onPress={() => handleImagePress(item.id, item.grid, item.source)}
+                    style={styles.touchable}    
                     >
                         <Image
                             source={item.source}
                             style={styles.image}
-                        />
+                            />
                         <TouchableOpacity style={styles.deleteButton} onPress={() => removeImage(item.id)}>
 							<Icon name='trash-outline' /> 
                         </TouchableOpacity>
                     </TouchableOpacity>
                 )}
+                onLayout={() => setIsVisible(true)}
             />
             {/* popUp info tablbas */}
             
@@ -175,9 +204,6 @@ export default function AddSchemeScreen() {
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
                                 onPress={() => {
-                                    // Aquí puedes agregar la lógica para manejar el número ingresado
-                                    setNumero(numero);
-                                    console.log('Número ingresado:');
                                     handleDataToGrid(data);
                                     setModalVisible(!modalVisible);
                                     setImages(images => [...images, image]);

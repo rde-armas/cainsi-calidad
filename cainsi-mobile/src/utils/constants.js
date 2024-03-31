@@ -17,10 +17,14 @@ const initialInputs = {
         propositoAlcance: 'Inspección de las superficies accesibles con la finalidad de descartar la existencia de deformaciones y severa corrosión localizada.',
         preparacion: 'Limpieza. Iluminación apropiada.',
         resultado:'',
-        scheme: {idEnvolvente:'', idCasquete:'', grid: [], gridData: {}},
+        scheme: {
+            idEnvolvente:'', idCasquete:'', imageUriEnv: null,
+		    imageUriCas: null, grid: [], gridData: {}
+        },
         observaciones:'',
         firmaRes: '',
-        firma:'',
+        firma1:'',
+        firma2:'',
         conclusion: '',
     },
     empty:{},
