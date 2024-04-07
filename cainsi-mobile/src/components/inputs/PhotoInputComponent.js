@@ -35,7 +35,7 @@ export default function Camara({ inputName, onInputChange }) {
       let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 1,
+        quality: 0.7,
         base64: true,
         imageExportType: 'jpeg',
       });

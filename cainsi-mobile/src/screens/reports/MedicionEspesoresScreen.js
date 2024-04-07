@@ -3,12 +3,12 @@ import { Alert, Image, SafeAreaView, Modal, Button, View, StyleSheet, Text, Scro
 import { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent } from '../../components/inputs/InputsComponents';
 import { FirmaInputs } from '../../components/inputs/FirmaInputs';
 import PhotoInputComponent from '../../components/inputs/PhotoInputComponent';
+import AddFirmaPicker from '../../components/inputs/AddFirmaPicker';
 import { SchemeList } from '../../components/SchemeList';
 import GridInput from '../../components/inputs/GridInputs';
 import { sendJSONToServer } from '../../api/pdf';
 import { saveJSONToDevice } from '../../utils/saveJSONToDevice';
 import { ReportContext } from '../../components/context/ReportContext';
-import { envolventes, casquetes } from '../../utils/constants';
 
 const MedicionEspesoresScreen = ({ navigation }) => {
 	const { reportInputs, resetReportValues } = React.useContext(ReportContext);
@@ -19,27 +19,24 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 	const [modalVisibleFirma1, setModalVisibleFirma1] = useState(false);
 	const [modalVisibleFirma2, setModalVisibleFirma2] = useState(false);
 	const [schemeImg, setScheme] =  useState({
-		idEnvolvente:'',
-		idCasquete: '',
 		grid: [],
-		imageUriEnv: null,
-		imageUriCas: null,
+		imageUriEnv: [],
+		imageUriCas: [],
 	});
 	
 
-	const handleSchemeSet = (idEnvolvente, grid, imageUriEnv, idCasquete='', imageUriCas='') => {
+	const handleSchemeSet = ( grid, imageUriEnv, imageUriCas=[]) => {
 		setScheme((scheme) => (
-			{ ...scheme, idEnvolvente, idCasquete, grid, imageUriEnv, imageUriCas, }
+			{ ...scheme, grid, imageUriEnv, imageUriCas }
 			));
 	};
 
-	const handleCasqueteSet = (id, list, img) => {
+	const handleCasqueteSet = (list, img) => {
 		schemeImg.grid[1].push(list);
 		schemeImg.imageUriCas = img;
-		schemeImg.idCasquete = id;
 		inputs.scheme.grid = schemeImg.grid;
-		inputs.scheme.idCasquete = id;
-		inputs.scheme.idEnvolvente = schemeImg.idEnvolvente;
+		inputs.scheme.imageUriEnv = schemeImg.imageUriEnv;
+		inputs.scheme.imageUriCas = schemeImg.imageUriCas;
 	}
 	
 	const handleInputChangeGrid = (title, rowIndex, colIndex, text) => {
@@ -161,8 +158,8 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						}}>
 						<View style={styles.centeredView}>
 							<View style={styles.modalView}>
-								<SchemeList onSelectImage={(id, grid, image) => {
-										handleSchemeSet(id, grid, image);
+								<SchemeList onSelectImage={(grid, image) => {
+										handleSchemeSet(grid, image);
 										setModalVisibleEnvoventes(!modalVisibleEnvolventes);
 									}} type='envolventes'/>
 							</View>
@@ -178,11 +175,11 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 				{/* PopUP SchemeList envolventes end*/}
 
 				{
-					schemeImg.idEnvolvente && (
+					schemeImg.imageUriEnv[0] && (
 						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
 							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
 								<Image
-									source={{uri: `data:image/jpeg;base64,${schemeImg.imageUriEnv}`}}
+									source={{uri: `data:image/jpeg;base64,${schemeImg.imageUriEnv[0]}`}}
 									style={{ flex: 1, width: undefined, height: undefined }}
 									resizeMode="contain"
 								/>
@@ -192,7 +189,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 				}
 				{/* PopUP casquetes */}
 				{
-					schemeImg.idEnvolvente && (
+					schemeImg.imageUriEnv[0] && (
 					<View style={styles.centeredView}>
 						<Modal
 							animationType="slide"
@@ -204,10 +201,9 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 							}}>
 							<View style={styles.centeredView}>
 								<View style={styles.modalView}>
-									<SchemeList onSelectImage={(id, grid, image) => {
+									<SchemeList onSelectImage={(grid, image) => {
 										// Manejar el id de la imagen seleccionada aquí
-										// setear el id de la imagen en la lista de inputs
-											handleCasqueteSet(id, grid, image);
+											handleCasqueteSet(grid, image);
 											setModalVisibleCasquetes(!modalVisibleCasquetes);
 										}} type='casquetes'/>
 								</View>
@@ -225,12 +221,12 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 				{/* PopUP SchemeList casquetes end*/}
 
 				{
-					schemeImg.idCasquete && (
+					schemeImg.imageUriCas[0] && (
 					<>
 						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
 							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
 								<Image
-									source={{ uri:`data:image/jpeg;base64,${schemeImg.imageUriCas}`}}
+									source={{ uri:`data:image/jpeg;base64,${schemeImg.imageUriCas[0]}`}}
 									style={{ flex: 1, width: undefined, height: undefined }}
 									resizeMode="contain"
 								/>
@@ -244,6 +240,22 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 					</>)
 				}
 				<TextMultiLineInputComponent inputName='firmaRes' label='Responsable' defaultInput={initialInputs.firmaRes} onInputChange={handleInputChange} />
+
+				<AddFirmaPicker inputName={'firma1'} onInputChange={handleInputChange}/>
+				{/* primera firma */}
+				{	
+					inputs.firma1 && (
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
+							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
+								<Image
+									source={{ uri: `data:image/jpeg;base64,${inputs.firma1}` }}
+									style={{ flex: 1, width: undefined, height: undefined }}
+									resizeMode="contain"
+									/>
+							</View>
+						</View>
+					)
+				}
 				{/* popUp Firma */}
 					<View style={styles.centeredView}>
 						<Modal
@@ -259,8 +271,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 									<FirmaInputs onInputFrirma={(firma)=> {
 										const img = firma.replace("data:image/jpeg;base64,", "");
 										handleInputChange('firma1', img);
-										initialInputs.firma1 = firma;
-										console.log('firma', initialInputs.firma1);
+										initialInputs.firma1 = img;
 										setModalVisibleFirma1(!modalVisibleFirma1);
 									}}/>
 								</View>
@@ -287,7 +298,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 									<FirmaInputs onInputFrirma={(firma)=> {
 										const img = firma.replace("data:image/jpeg;base64,", "");
 										handleInputChange('firma2', img);
-										initialInputs.firma2 = firma;
+										initialInputs.firma2 = img;
 										setModalVisibleFirma2(!modalVisibleFirma2);
 									}}/>
 								</View>
@@ -300,25 +311,13 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						</Pressable>
 					</View>
 				{/* Fin PopUP FIrma */}
+				
 				{	
-					initialInputs.firma1 && (
+					inputs.firma2 !== '-' && (
 						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
 							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
 								<Image
-									source={{uri: initialInputs.firma1}}
-									style={{ flex: 1, width: undefined, height: undefined }}
-									resizeMode="contain"
-									/>
-							</View>
-						</View>
-					)
-				}
-				{	
-					initialInputs.firma2 && (
-						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
-							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
-								<Image
-									source={{uri: initialInputs.firma2}}
+									source={{ uri: `data:image/jpeg;base64,${inputs.firma2}`}}
 									style={{ flex: 1, width: undefined, height: undefined }}
 									resizeMode="contain"
 									/>

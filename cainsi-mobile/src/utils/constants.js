@@ -2,8 +2,8 @@ export const AWS = ''
 
 const initialInputs = {
     medicionEspesores:{
-        dispositivo: '',
-        cliente: '',
+        dispositivo: '-',
+        cliente: '-',
         photoDivice: [] ,
         elaborado: 'Ing. Manuel Cavalleri',
         sitioInspeccion: 'Toda la superficie exterior del tanque.',
@@ -16,16 +16,16 @@ const initialInputs = {
         objeto: 'Todas las superficies accesibles y uniones soldadas del tanque.',
         propositoAlcance: 'Inspección de las superficies accesibles con la finalidad de descartar la existencia de deformaciones y severa corrosión localizada.',
         preparacion: 'Limpieza. Iluminación apropiada.',
-        resultado:'',
+        resultado:'-',
         scheme: {
-            idEnvolvente:'', idCasquete:'', imageUriEnv: null,
-		    imageUriCas: null, grid: [], gridData: {}
+            imageUriEnv: [], grid: [], gridData: {},
+		    imageUriCas: []
         },
         observaciones:'',
         firmaRes: '',
         firma1:'',
-        firma2:'',
-        conclusion: '',
+        firma2:'-',
+        conclusion: '-',
     },
     empty:{},
 };

@@ -9,7 +9,7 @@ import { QuestionsAddScheme } from '../components/inputs/QuestionsAddScheme';
 export default function AddSchemeScreen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [images, setImages] = useState([]);
-    const [image, setImage] = useState({ id: '', source: null });
+    const [image, setImage] = useState({ id: '', source: null , width: '' , height: ''});
     const [data, setData] = useState([]);
     const [isVisible, setIsVisible] = useState(false);
     const [base64Image, setBase64Image] = useState('');
@@ -84,7 +84,7 @@ export default function AddSchemeScreen() {
 			let result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
-				quality: 0.7,
+				quality: 0.5,
 				base64: true,
 				imageExportType: 'jpeg',
 			});
@@ -106,7 +106,10 @@ export default function AddSchemeScreen() {
 					to: newImageUri,
 				});
 	
-				const newImage = { id: date, source: { uri: newImageUri }};
+				const newImage = { 
+                    id: date, source: { uri: newImageUri }, 
+                    width: manipResult.width, height: manipResult.height
+                };
                 setImage(newImage);
                 setModalVisible(true);
 			}
@@ -117,7 +120,10 @@ export default function AddSchemeScreen() {
 	};
 
     const handleDataToGrid = async (data) => {
-        const gridData = {id: image.id, grid: [], source: base64Image};
+        const gridData = {
+            id: image.id, grid: [], source: base64Image, 
+            width: image.width, height: image.height
+        };
         if(data.title === 'envolvente') {
             gridData.grid.push(['Envolvente', data.seccion.split(','), data.direccion.split(',')]);
             if(data.direction === 'horizontal') {
@@ -202,12 +208,12 @@ export default function AddSchemeScreen() {
                         <View style={styles.modalView}>
                             <QuestionsAddScheme image={image} setData={setData} />
                             <Pressable
-                                style={[styles.button, styles.buttonClose]}
+                                style={[styles.button, styles.buttonOpen]}
                                 onPress={() => {
                                     handleDataToGrid(data);
                                     setModalVisible(!modalVisible);
                                     setImages(images => [...images, image]);
-                                    setImage({ id: '', source: null });
+                                    setImage({ id: '', source: null, width: '', height: ''});
                                     setBase64Image('');
                                 }}>
                                 <Text style={styles.textStyle}>Aceptar</Text>
@@ -284,14 +290,15 @@ const styles = StyleSheet.create({
 		elevation: 5,
 	},
     textStyle: {
-		color: 'black',
+		color: 'white',
 		fontWeight: 'bold',
 		textAlign: 'center',
 	},
     button: {
 		borderRadius: 5,
 		padding: 10,
-		elevation: 2,
+		elevation: 5,
+        marginTop: 25,
 	},
 	buttonOpen: {
 		backgroundColor: '#1590f2',

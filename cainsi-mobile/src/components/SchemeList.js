@@ -16,16 +16,14 @@ function SchemeList({ onSelectImage, type}) {
         const folderPath = FileSystem.documentDirectory + 'esquemas/';
         const filePath = folderPath + 'escheme_mediciones_espesores.json';
 
-        // Leer el contenido del archivo y hacer un console.log
         try {
             const fileInfo = await FileSystem.getInfoAsync(filePath);
             if (fileInfo.exists) {
                 const fileContent = await FileSystem.readAsStringAsync(filePath);
                 const data = JSON.parse(fileContent);
                 for (const item of data[type]) {
-                    const { id, grid, source } = item;
-                    setImages((prevImages) => [...prevImages, { id, grid, source }]);
-                    console.log('grid', grid)
+                    const { id, grid, source, width, height } = item;
+                    setImages((prevImages) => [...prevImages, { id, grid, source, width, height}]); //width, height
                 }
             } else {
                 alert('No se encontró el archivo de esquemas. Cargar esquemas por favor!!!')
@@ -36,8 +34,8 @@ function SchemeList({ onSelectImage, type}) {
     }
 
 
-    const handleImagePress = (id, grid, image) => {
-        onSelectImage(id, grid, image);
+    const handleImagePress = (grid, source, width, height) => {
+        onSelectImage(grid, [source, width, height]);
     };
 
     return (
@@ -47,7 +45,7 @@ function SchemeList({ onSelectImage, type}) {
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
                 <TouchableOpacity
-                    onPress={() => handleImagePress(item.id, item.grid, item.source)}
+                    onPress={() => handleImagePress(item.grid, item.source, item.width, item.height)}
                     style={style.touchable}
                 >
                     <Image
