@@ -239,7 +239,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 						</View>
 					</>)
 				}
-				<TextMultiLineInputComponent inputName='firmaRes' label='Responsable' defaultInput={initialInputs.firmaRes} onInputChange={handleInputChange} />
+				<TextMultiLineInputComponent inputName='firmaRes1' label='Responsable' defaultInput={initialInputs.firmaRes} onInputChange={handleInputChange} />
 
 				<AddFirmaPicker inputName={'firma1'} onInputChange={handleInputChange}/>
 				{/* primera firma */}
@@ -310,18 +310,22 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 							<Text style={styles.textStyle}>Agregar segunda firma.</Text>
 						</Pressable>
 					</View>
+					<AddFirmaPicker inputName={'firma2'} onInputChange={handleInputChange}/>
 				{/* Fin PopUP FIrma */}
 				
 				{	
 					inputs.firma2 !== '-' && (
-						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
-							<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
-								<Image
-									source={{ uri: `data:image/jpeg;base64,${inputs.firma2}`}}
-									style={{ flex: 1, width: undefined, height: undefined }}
-									resizeMode="contain"
-									/>
+							<View>
+							<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20 }}>
+								<View style={{ width: windowWidth * 0.7, height: windowHeight * 0.5, borderWidth: 2, borderColor: 'black' }}>
+									<Image
+										source={{ uri: `data:image/jpeg;base64,${inputs.firma2}`}}
+										style={{ flex: 1, width: undefined, height: undefined }}
+										resizeMode="contain"
+										/>
+								</View>
 							</View>
+							<TextMultiLineInputComponent inputName='firmaRes2' label='Segundo Responsable' defaultInput={initialInputs.firmaRes} onInputChange={handleInputChange} />
 						</View>
 					)
 				}

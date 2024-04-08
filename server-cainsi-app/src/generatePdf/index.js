@@ -153,34 +153,93 @@ const addContent = async (doc, data) => {
             yPos = 50; // Reset yPos for new page
         }
     });
+    // Add firmas
     const pageWidth = doc.internal.pageSize.width;
-    let lines = [];
-    if (data.firmaRes.includes('\n')){
-        lines = data.firmaRes.split('\n');
+    let linesFirma1 = [];
+    
+    if (data.firmaRes1.includes('\n')) {
+        linesFirma1 = data.firmaRes1.split('\n');
     } else {
-        lines.push(data.firmaRes);
-        lines.push('');
+        linesFirma1.push(data.firmaRes1);
+        linesFirma1.push('');
     }
-
+    
     // Calcular el ancho de cada línea de texto
-    const widthTextLine1 = doc.getTextWidth(lines[0]);
-    const widthTextLine2 = doc.getTextWidth(lines[1]);
-
+    let widthTextLine1 = doc.getTextWidth(linesFirma1[0]);
+    let widthTextLine2 = doc.getTextWidth(linesFirma1[1]);
+    
     // Calcular la posición X para cada línea de texto
-    const textXLine1 = (pageWidth - widthTextLine1) / 2;
-    const textXLine2 = (pageWidth - widthTextLine2) / 2;
+    let textXLine1;
+    let textXLine2;
+    
+    if (data.firma2 !== '-') {
+        // Si hay una segunda firma, calcular la posición X de acuerdo al espacio entre las firmas
+        const spaceBetweenFirmas = (pageWidth ) / 2;
+        textXLine1 = (spaceBetweenFirmas - widthTextLine1) / 2 + 25; 
+        textXLine2 = (spaceBetweenFirmas - widthTextLine2) / 2 + 25; 
+    } else {
+        // Si solo hay una firma, centrar el texto horizontalmente en la página
+        textXLine1 = (pageWidth - widthTextLine1) / 2; // Posición X para el texto de firmaRes1
+        textXLine2 = (pageWidth - widthTextLine2) / 2; // Posición X para el texto de firmaRes2
+    }
     
     yPos = checkPageOverflow(doc, yPos, 40);
+    
     // Calcular la posición Y para ambas líneas de texto
-    const yPosLine1 = yPos; 
-    const yPosLine2 = yPos + 6; 
-    yPos+=8;
-
-    doc.text(lines[0], textXLine1, yPosLine1);
+    let yPosLine1 = yPos;
+    let yPosLine2 = yPos + 6;
+    yPos += 8;
+    
+    // Dibujar la primera línea de texto encima de la primera firma
+    doc.text(linesFirma1[0], textXLine1, yPosLine1);
     doc.setFont('Lato-Bold', 'normal');
-    doc.text(lines[1], textXLine2, yPosLine2);
-    const imageX = (pageWidth - 38 ) / 2;
-    doc.addImage(data.firma1, 'JPEG', imageX, yPos, 40, 30);
+    doc.text(linesFirma1[1], textXLine2, yPosLine2);
+    
+    // Calcular la posición X para la primera firma
+    let imageX1;
+    if (data.firma2 && data.firma2 !== '-') {
+        // Si hay una segunda firma, colocar ambas firmas en la misma línea horizontal
+        imageX1 = (pageWidth + 20 ) / 4; // Posición X de la primera firma
+    } else {
+        // Si solo hay una firma, centrarla horizontalmente en la página
+        imageX1 = (pageWidth) / 2; // Posición X de la primera firma
+    }
+    
+    // Dibujar la primera firma
+    doc.addImage(data.firma1, 'JPEG', imageX1, yPos, 40, 30);
+    
+    // Verificar si hay una segunda firma
+    if (data.firma2 && data.firma2 !== '-') {
+        // Dibujar la segunda firma y texto asociado
+        const imageX2 = (pageWidth - 40) / 4 * 3; // Posición X de la segunda firma
+        doc.addImage(data.firma2, 'JPEG', imageX2, yPos, 40, 30);
+    
+        // Si hay un firmaRes2, dibujarla encima de la segunda firma
+        if (data.firmaRes2 !== '-') {
+            let linesFirma2 = [];
+    
+            if (data.firmaRes2.includes('\n')) {
+                linesFirma2 = data.firmaRes2.split('\n');
+            } else {
+                linesFirma2.push(data.firmaRes2);
+                linesFirma2.push('');
+            }
+            widthTextLine1 = doc.getTextWidth(linesFirma2[0]);
+            widthTextLine2 = doc.getTextWidth(linesFirma2[1]);
+            textXLine1 = imageX2 + (50 - widthTextLine1) / 2; // Posición X para firmaRes2 centrada
+            textXLine2 = imageX2 + (50 - widthTextLine2) / 2; // Posición X para firmaRes2 centrada
+            //doc.text(data.firmaRes2, textXRes2, yPos - 10); // Posición Y para firmaRes2 encima de la segunda firma
+            yPosLine1 = yPos - 8;
+            yPosLine2 = yPosLine1 + 6;
+            doc.setFont('Lato-Light', 'normal');
+            doc.text(linesFirma2[0], textXLine1, yPosLine1);
+            doc.setFont('Lato-Bold', 'normal');
+            doc.text(linesFirma2[1], textXLine2, yPosLine2);
+        }
+    }
+    
+    // Ajustar yPos para dejar espacio para la siguiente sección si es necesario
+    yPos += (data.firma2 && data.firma2 !== '-') ? 40 : 0;
 };
 
 module.exports =  { generatePDF }

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Button, Image, Dimensions } from 'react-native';
+import React from 'react';
+import { View, Dimensions, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 
@@ -21,7 +21,7 @@ export default function AddFirmaPicker({ inputName, onInputChange }) {
                     [],
                     { format: 'jpeg', compress: 0.9, base64: true } // Comprimir la imagen al 80% de calidad
                 );
-                onInputChange(inputName, [manipResult.base64, manipResult.width, manipResult.height]);
+                onInputChange(inputName, manipResult.base64);//, manipResult.width, manipResult.height]);
             }
         } catch (error) {
             console.error('Error al manipular la imagen:', error);
@@ -35,8 +35,26 @@ export default function AddFirmaPicker({ inputName, onInputChange }) {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <View style={{ marginTop: 20 }}>
-                <Button title="Firma desde galeria" onPress={openImagePicker} />
+                <TouchableOpacity onPress={openImagePicker} style={styles.button}>
+                    <Text style={styles.buttonText}>Agregar Firma Galeria</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
 }
+
+
+const styles = StyleSheet.create({
+    button: {
+        backgroundColor: '#1590f2', 
+        padding: 10,
+        alignItems: 'center',
+        borderRadius: 5,
+        marginTop: 10, 
+    },
+    buttonText: {
+        color: 'white',
+		fontWeight: 'bold',
+		textAlign: 'center',
+    },
+});

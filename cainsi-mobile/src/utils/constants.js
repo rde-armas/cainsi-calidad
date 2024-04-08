@@ -22,8 +22,9 @@ const initialInputs = {
 		    imageUriCas: []
         },
         observaciones:'',
-        firmaRes: '',
+        firmaRes1: '',
         firma1:'',
+        firmaRes2: '-',
         firma2:'-',
         conclusion: '-',
     },

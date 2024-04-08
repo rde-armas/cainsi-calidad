@@ -37,11 +37,7 @@ const addScheme = (doc, imageY, scheme, title) => {
     const widthCas = aux.width;
     const heightCas = aux.height;
     const imageXCas = (pageWidth - widthCas) / 2;
-    console.log('Maximo', doc.internal.pageSize.height);
-    console.log('Ypos', yPos);
-    console.log('Maximo', Math.max(maxDimeCas, heightCas));
     yPos = checkPageOverflow(doc, yPos, Math.max(maxDimeCas, heightCas) + 10);
-    console.log('Ypos', yPos);
     doc.setFont('Lato-Regular', 'normal');
     doc.setFontSize(14);
     doc.text('- Casquete', 50 , yPos);
