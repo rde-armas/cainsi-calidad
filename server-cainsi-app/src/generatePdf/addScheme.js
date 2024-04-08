@@ -4,15 +4,16 @@ const { addHeader, addFooter } = require('./firstPage.js');
 
 const addScheme = (doc, imageY, scheme, title) => {
     const pageWidth = doc.internal.pageSize.width;
-    
-    const imagePathEnv = `./src/assets/envolventes/${scheme.idEnvolvente}.png`;
-    const imagePathCas = `./src/assets/casquetes/${scheme.idCasquete}.png`;
-    // const imagePathEnv = `../assets/envolventes/${scheme.idEnvolvente}.png`;
-    // const imagePathCas = `../assets/casquetes/${scheme.idCasquete}.png`;
-
-    const { width, height } = dimensionAspectRatio(imagePathEnv, pageWidth - 90, 90);
+    // Configurar estilo para línea negra
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(0, 0, 0);
+  
+    const maxDimeEnv = 90;
+    const { width, height } = dimensionAspectRatio(
+        '', pageWidth - 50, maxDimeEnv, scheme.imageUriEnv[1], scheme.imageUriEnv[2]
+        );
     const imageXEnv = (pageWidth - width) / 2;
-    let yPos = checkPageOverflow(doc, imageY, Math.max(90, height) + 14);
+    let yPos = checkPageOverflow(doc, imageY, Math.max(maxDimeEnv, height) + 14);
     
     // title
     doc.setFont('Lato-Bold', 'normal');
@@ -25,19 +26,29 @@ const addScheme = (doc, imageY, scheme, title) => {
     doc.setFont('Lato-Regular', 'normal');
     doc.text('- Envolventes', 50 , yPos);
     yPos += 7;
-    addImage(doc, imagePathEnv, '', 'PNG', imageXEnv, yPos, width, 90);
-    yPos += Math.max(90, height) + 7;
+    addImage(doc, '', scheme.imageUriEnv, 'JPEG', imageXEnv, yPos, width, maxDimeEnv);
+    doc.rect(imageXEnv - 3, yPos - 3, width + 6, height + 6);
+    yPos += Math.max(90, height) + 10;
     // add casquete
-    const aux = dimensionAspectRatio(imagePathCas, pageWidth - 40, 40);
+    const maxDimeCas = 60;
+    const aux = dimensionAspectRatio(
+        '', pageWidth - maxDimeCas, maxDimeCas, scheme.imageUriCas[1], scheme.imageUriCas[2]
+        );
     const widthCas = aux.width;
     const heightCas = aux.height;
     const imageXCas = (pageWidth - widthCas) / 2;
-    yPos = checkPageOverflow(doc, yPos, Math.max(40, heightCas) + 14);
+    console.log('Maximo', doc.internal.pageSize.height);
+    console.log('Ypos', yPos);
+    console.log('Maximo', Math.max(maxDimeCas, heightCas));
+    yPos = checkPageOverflow(doc, yPos, Math.max(maxDimeCas, heightCas) + 10);
+    console.log('Ypos', yPos);
+    doc.setFont('Lato-Regular', 'normal');
+    doc.setFontSize(14);
     doc.text('- Casquete', 50 , yPos);
     yPos += 7;
-    addImage(doc, imagePathCas, '', 'PNG', imageXCas, yPos, widthCas, 40);
-    yPos += Math.max(40, heightCas) + 7;
-
+    addImage(doc, '', scheme.imageUriCas, 'JPEG', imageXCas, yPos, widthCas, maxDimeCas);
+    doc.rect(imageXCas - 3, yPos - 3, widthCas + 6, heightCas + 6);
+    yPos += Math.max(maxDimeCas, heightCas) + 7;
     yPos = addGrid(doc, scheme, yPos);
     return yPos;
 }
@@ -154,7 +165,7 @@ const addMedidasEnMM = (doc) => {
 
 const checkPageOverflow = (doc, currentY, addedHeight) => {
     const pageHeight = doc.internal.pageSize.height;
-    if (currentY + addedHeight > pageHeight - 80) {
+    if (currentY + addedHeight > pageHeight - 60) {
         doc.addPage();
         addHeader(doc);
         addFooter(doc);

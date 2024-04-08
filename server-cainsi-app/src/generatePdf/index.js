@@ -73,9 +73,9 @@ const generatePDF = async (data) => {
     addHeader(doc);
     addFooter(doc);
     addContent(doc, data);
-    //doc.save('InformeTecnico.pdf');
+    doc.save('InformeTecnico.pdf');
     const arrayBuffer = doc.output('arraybuffer');
-    return arrayBuffer;
+    //return arrayBuffer;
 };
 
 // Función para agregar contenido
@@ -180,7 +180,7 @@ const addContent = async (doc, data) => {
     doc.setFont('Lato-Bold', 'normal');
     doc.text(lines[1], textXLine2, yPosLine2);
     const imageX = (pageWidth - 38 ) / 2;
-    doc.addImage(data.firma, 'JPEG', imageX, yPos, 40, 30);
+    doc.addImage(data.firma1, 'JPEG', imageX, yPos, 40, 30);
 };
 
 module.exports =  { generatePDF }
