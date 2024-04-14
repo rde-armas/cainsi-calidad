@@ -73,9 +73,9 @@ const generatePDF = async (data) => {
     addHeader(doc);
     addFooter(doc);
     addContent(doc, data);
-    doc.save('InformeTecnico.pdf');
+    //doc.save('InformeTecnico.pdf');
     const arrayBuffer = doc.output('arraybuffer');
-    //return arrayBuffer;
+    return arrayBuffer;
 };
 
 // Función para agregar contenido
@@ -202,7 +202,7 @@ const addContent = async (doc, data) => {
         imageX1 = (pageWidth + 20 ) / 4; // Posición X de la primera firma
     } else {
         // Si solo hay una firma, centrarla horizontalmente en la página
-        imageX1 = (pageWidth) / 2; // Posición X de la primera firma
+        imageX1 = (pageWidth) / 2 - 18; // Posición X de la primera firma
     }
     
     // Dibujar la primera firma

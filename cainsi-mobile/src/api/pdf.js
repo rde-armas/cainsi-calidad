@@ -3,8 +3,8 @@ import { decode } from 'base-64';
 
 const sendJSONToServer = async (jsonData) => {
     try {
-        //fetch('https://eltpjtzpzk.execute-api.sa-east-1.amazonaws.com/dev/cainsi-pdf', {
-            fetch('http://192.168.1.8:3000/receive-json', {
+        fetch('https://eltpjtzpzk.execute-api.sa-east-1.amazonaws.com/dev/cainsi-pdf', {
+            //fetch('http://192.168.1.8:3000/receive-json', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -15,6 +15,7 @@ const sendJSONToServer = async (jsonData) => {
             if (!response.ok) {
                 throw new Error('Respuesta del servidor no es válida');
             }
+            console.log('Response:', response);
             return response.blob();
         })
         .then(blob => {

@@ -34,7 +34,6 @@ const ReportsQueueScreen = () => {
             const pdfUri = `${FileSystem.documentDirectory}${pdfName}`;
             // Utilizar expo-sharing en lugar de Share de react-native
             await Sharing.shareAsync(`file://${pdfUri}`);
-            console.log('PDF compartido');
         } catch (error) {
             console.error('Error al compartir PDF:', error.message);
         }
@@ -59,7 +58,6 @@ const ReportsQueueScreen = () => {
             const jsonUri = `${FileSystem.documentDirectory}${jsonName}`;
             const jsonContent = await FileSystem.readAsStringAsync(jsonUri);
             const jsonData = JSON.parse(jsonContent);
-            console.log('Datos cargados:', jsonData);
         } catch (error) {
             console.error('Error cargando datos:', error);
         }

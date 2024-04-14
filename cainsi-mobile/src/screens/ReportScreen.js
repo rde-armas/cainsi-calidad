@@ -20,7 +20,6 @@ export default function ReportScreen(props) {
     const renderReportComponent = () => {
         switch (report) {
             case "medicionEspesores":
-                console.log(report);
                 return <MedicionEspesoresScreen navigation={ navigation }/>;
             case "empty":
                 return <Empty/>;

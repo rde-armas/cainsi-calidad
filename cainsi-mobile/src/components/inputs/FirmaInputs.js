@@ -17,7 +17,7 @@ const FirmaInputs = ({onInputFrirma}) => {
   
     // Called after ref.current.clearSignature()
     const handleClear = () => {
-         console.log("clear success!");
+        console.log("clear success!");
     };
 
     return (

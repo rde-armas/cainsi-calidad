@@ -1,12 +1,10 @@
-import { FlatList, SafeAreaView, StyleSheet, TouchableOpacity, Image, View, Text , Modal, Alert, Pressable } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, Image, View, Text , Modal, Alert, Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system';
 import Icon from "react-native-vector-icons/Ionicons";
 import { QuestionsAddScheme } from '../components/inputs/QuestionsAddScheme';
 
-export default function AddSchemeScreen() {
+function SchemeListAddSchemeScreen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [images, setImages] = useState([]);
     const [image, setImage] = useState({ id: '', source: null , width: '' , height: ''});
@@ -68,51 +66,10 @@ export default function AddSchemeScreen() {
                 // Escribir los datos actualizados de vuelta al archivo
                 await FileSystem.writeAsStringAsync(filePath, JSON.stringify(newData));
             }
-        
             // Actualizar el estado de las imágenes
             setImages(images => images.filter(img => img.id !== id));
 		} catch (err) {
 			console.error('Error al eliminar la imagen:', err);
-		}
-	};
-
-    const handleAddImages = async () => {
-		try {
-			let result = await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: ImagePicker.MediaTypeOptions.Images,
-				allowsEditing: true,
-				quality: 0.4,
-				base64: true,
-				imageExportType: 'jpeg',
-			});
-		
-			if (!result.canceled) {
-				const manipResult = await ImageManipulator.manipulateAsync(
-					result.assets[0].uri,
-					[],
-					{ format: 'jpeg', base64: true }
-				);
-
-                setBase64Image(manipResult.base64);
-				const directory = FileSystem.documentDirectory + 'esquemas/';
-                const date = Date.now().toString();
-				const newImageUri = `${directory}${date}.jpeg`;
-	
-				await FileSystem.copyAsync({
-					from: manipResult.uri,
-					to: newImageUri,
-				});
-	
-				const newImage = { 
-                    id: date, source: { uri: newImageUri }, 
-                    width: manipResult.width, height: manipResult.height
-                };
-                setImage(newImage);
-                setModalVisible(true);
-			}
-		
-		} catch (error) {
-			console.error('Error al manipular la imagen:', error);
 		}
 	};
 
@@ -168,7 +125,7 @@ export default function AddSchemeScreen() {
     };
     
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <FlatList
                 data={images}
                 numColumns={2}
@@ -218,12 +175,8 @@ export default function AddSchemeScreen() {
                     </View>
                 </Modal>
             </View>
-            
             {/* popUp info tablbas */}
-			<TouchableOpacity onPress={handleAddImages}  >
-				<Icon name='add-circle' size={50} color='#3786ff' style={styles.addButtonContainer}/>
-			</TouchableOpacity>
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -236,11 +189,11 @@ const styles = StyleSheet.create({
     },
     image: {
         flex: 1,
-        width: null,
+        //width: 10,
         maxHeight: 150,
         borderWidth: 2,
         borderColor: "#000",
-        resizeMode: "contain",
+        //resizeMode: "contain",
         margin: 6,
     },
     deleteButton: {
@@ -299,3 +252,5 @@ const styles = StyleSheet.create({
 		backgroundColor: '#1590f2',
 	},
 });
+
+export { SchemeListAddSchemeScreen }

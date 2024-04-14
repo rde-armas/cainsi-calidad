@@ -19,7 +19,7 @@ export default function AddFirmaPicker({ inputName, onInputChange }) {
                 const manipResult = await ImageManipulator.manipulateAsync(
                     result.assets[0].uri,
                     [],
-                    { format: 'jpeg', compress: 0.9, base64: true } // Comprimir la imagen al 80% de calidad
+                    { format: 'jpeg', compress: 0.6, base64: true } // Comprimir la imagen al 80% de calidad
                 );
                 onInputChange(inputName, manipResult.base64);//, manipResult.width, manipResult.height]);
             }

@@ -32,11 +32,14 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 	};
 
 	const handleCasqueteSet = (list, img) => {
-		schemeImg.grid[1].push(list);
+		list.forEach(item => {
+			schemeImg.grid[1].push(item);
+		});
 		schemeImg.imageUriCas = img;
 		inputs.scheme.grid = schemeImg.grid;
 		inputs.scheme.imageUriEnv = schemeImg.imageUriEnv;
 		inputs.scheme.imageUriCas = schemeImg.imageUriCas;
+		inputs.scheme.gridData = {};
 	}
 	
 	const handleInputChangeGrid = (title, rowIndex, colIndex, text) => {
