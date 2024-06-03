@@ -13,6 +13,7 @@ function ReportProvider({children}) {
     }
 
     const resetReportValues = (nameReport) => {
+        console.log('resetReportValues', nameReport);
         setReportInputs(initialInputs[nameReport]);
     };
 

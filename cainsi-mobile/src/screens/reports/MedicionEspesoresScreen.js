@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Image, SafeAreaView, Modal, Button, View, StyleSheet, Text, ScrollView, Pressable, Dimensions} from 'react-native';
 import { TextMultiLineInputComponent, TextInputComponent, NumberInputComponent } from '../../components/inputs/InputsComponents';
 import { FirmaInputs } from '../../components/inputs/FirmaInputs';
@@ -11,6 +11,7 @@ import { saveJSONToDevice } from '../../utils/saveJSONToDevice';
 import { ReportContext } from '../../components/context/ReportContext';
 
 const MedicionEspesoresScreen = ({ navigation }) => {
+	const [formSubmitted, setFormSubmitted] = useState(false);
 	const { reportInputs, resetReportValues } = React.useContext(ReportContext);
 	let initialInputs = {...reportInputs};
 	const [inputs, setInputs] = useState(initialInputs);
@@ -24,6 +25,12 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 		imageUriCas: [],
 	});
 	
+	useEffect(() => {
+		// Esta función se ejecutará cuando el componente se monte o actualice
+		if (formSubmitted) {
+			setFormSubmitted(false);
+		}
+	}, [formSubmitted]);
 
 	const handleSchemeSet = ( grid, imageUriEnv, imageUriCas=[]) => {
 		setScheme((scheme) => (
@@ -104,6 +111,7 @@ const MedicionEspesoresScreen = ({ navigation }) => {
 			await sendJSONToServer(inputs);
 			alert('Reporte enviado correctamente');
 			resetReportValues('medicionEspesores');
+			setFormSubmitted(true);
 			navigation.navigate("Home");
 		} catch (error) {
 			alert('Error al enviar el reporte');

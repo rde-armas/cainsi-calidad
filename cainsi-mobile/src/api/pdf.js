@@ -15,7 +15,6 @@ const sendJSONToServer = async (jsonData) => {
             if (!response.ok) {
                 throw new Error('Respuesta del servidor no es válida');
             }
-            console.log('Response:', response);
             return response.blob();
         })
         .then(blob => {
@@ -46,12 +45,15 @@ const sendJSONToServer = async (jsonData) => {
 
 // Save archivos
 async function saveBlobAsPDF(base64Data, fileName) {
-    console.log('Saving blob as PDF');
-    const binaryData = decode(base64Data);
-    const base64String = binaryData.toString('base64');
-    const directory = FileSystem.documentDirectory;
-    FileSystem.writeAsStringAsync(directory + fileName, base64String, { encoding: FileSystem.EncodingType.Base64 });
-
+    try {
+        const binaryData = decode(base64Data);
+        const base64String = binaryData.toString('base64');
+        const directory = FileSystem.documentDirectory;
+        await FileSystem.writeAsStringAsync(directory + fileName, base64String, { encoding: FileSystem.EncodingType.Base64 });
+        console.log('PDF guardado correctamente.');
+    } catch (error) {
+        console.error('Error al guardar el PDF:', error);
+    }
 }
 
 export { sendJSONToServer };

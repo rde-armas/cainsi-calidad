@@ -220,8 +220,8 @@ export default function AddSchemeScreen() {
             </View>
             
             {/* popUp info tablbas */}
-			<TouchableOpacity onPress={handleAddImages}  >
-				<Icon name='add-circle' size={50} color='#3786ff' style={styles.addButtonContainer}/>
+			<TouchableOpacity onPress={handleAddImages} style={styles.addButtonContainer}>
+				<Icon name='add-circle' size={50} color='#3786ff'/>
 			</TouchableOpacity>
         </SafeAreaView>
     );
